@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Usado para la biblioteca de iconos del "+" de nuevo comentario en el formulario-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayuntamiento de Cazorla</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <nav class="encabezado">
+        <!-- Envuelvo dentro de un enlace la imagen para que sea clicable, esta llevará a la pagina de inicio-->
+        <a href="portada.html">
+            <img src="img/logo.png" alt="Logo Ayuntamiento de Cazorla" id="logo" title="Inicio">
+        </a>
+
+        <h1> Ayuntamiento de cazorla</h1>
+        
+        <ul class="enlaces-encabezado">
+            <li> <a href="#">Iniciar sesión</a> </li>
+            <li> <a href="#">Contacto</a> </li>
+            <li> <a href="#">FAQ</a> </li>
+        </ul>
+    </nav>
+
+    <div class="lateral-main">
+        <aside class="menu-lateral">
+            <ul>
+                <li> <a href="#"> Subir Incidencia </a> </li>
+                <li> <a href="#"> Eliminar Incidencia </a> </li>
+                <li> <a href="#"> Estadísticas </a> </li>
+            </ul>
+        </aside>
+
+        <main class="main-noticia">
+            <article class="articulo-contenedor">
+                <header class="header-noticia">
+                    <h1> Corte de tráfico temporal por la caída de un pino </h1>
+                    <div class="enlaces-redes">
+                        <a href="#"> <img src="img/Social/TikTok.png" alt="Tiktok"> </a>
+                        <a href="https://www.instagram.com/aytocazorla/?hl=es" target="_blank"> <img src="img/Social/IG.png" alt="Instragram"> </a>
+                        <a href="https://x.com/AytodeCazorla" target="_blank"> <img src="img/Social/X.png" alt="Twitter"> </a>
+                        <a href="noticia_imprimir.html"> <img src="img/Social/Print.png" alt="Imprimir"> </a>    
+                    </div>
+                </header>
+
+                <section class="cuerpo-noticia">
+                    <div class="texto-noticia">
+                        <p>
+                            El Ayuntamiento de Cazorla informa a todos los vecinos y visitantes que la carretera A-319, en el tramo 
+                            de subida hacia el Empalme del Valle, permanecerá cortada al tráfico durante la mañana de hoy debido a la caída de 
+                            un pino de grandes dimensiones sobre la calzada, provocada por las fuertes rachas de viento de la pasada madrugada.
+                        </p>
+                        <p>
+                            Afortunadamente, no hay que lamentar daños personales ni materiales de gravedad en los vehículos que 
+                            transitaban la zona. Efectivos de la Policía Local, junto con los servicios de mantenimiento del Parque Natural 
+                            y los Bomberos, ya se encuentran en el lugar trabajando en las labores de troceado y retirada del tronco.
+                        </p>
+                        <p>
+                            Se recomienda a los conductores que necesiten acceder a la sierra que utilicen rutas alternativas y extremen 
+                            la precaución, ya que la alerta amarilla por fuertes vientos seguirá activa hasta las 18:00 horas. Informaremos 
+                            de la reapertura de la vía a través de nuestros canales oficiales y redes sociales en cuanto los operarios finalicen 
+                            las tareas de limpieza.
+                        </p>
+                    </div>
+                    <div class="imagenes-noticia">
+                        <img src="img/noticia.png" alt="Foto de la noticia">
+                        <img src="img/noticia2.png" alt="Otra foto de la noticia">
+                    </div>
+                </section>
+            </article>
+        </main>
+
+        <div id="zona-derecha"></div>
+
+        <div id="pestana-abrir">
+                <i class="fa-solid fa-comments"></i>
+        </div>
+        
+        <aside class="formulario">
+            <button id="cancel">&times;</button>
+            <button id="boton-bloque-formulario"> <i class="fa-solid fa-plus"></i> </button>
+            
+            <form class="bloque-formulario" >
+                <label for="autor-comentario">Nombre:</label>
+                <input type="text" name="nombre" class="input-estilo" id="autor-comentario">
+                
+                <label for="email-comentario">Correo:</label>
+                <input type="email" name="email" class="input-estilo" id="email-comentario">
+
+                <label for="texto-comentario">Texto:</label>
+                <textarea name="text" class="input-estilo" id="texto-comentario" rows="6"></textarea>
+
+                <div class="botones-comentario">
+                    <button type="button" id="cancelar-comentario">Cancelar</button>
+                    <button type="submit">Enviar</button>
+                </div>
+            </form>
+
+            <ul class="comments">
+                <li> 
+                    <div class="c-nombre"> Juan Carlos Ruiz </div> 
+                    <div class="c-hora"> hace 14 minutos | 22 mar. 2026 </div>
+                    <div class="c-comentario"> ¡Vaya susto! Justo pasé por ahí hace media hora y se veía el pino algo inclinado por el viento. Gracias al Ayuntamiento de Cazorla por avisar rápido, mejor dar la vuelta por la carretera de El Valle para no quedarse atrapado.</div>
+                </li>
+                <li> 
+                    <div class="c-nombre"> Elena M. Serrano </div> 
+                    <div class="c-hora"> 9:35 | 21/03/2026 </div>
+                    <div class="c-comentario"> ¿Se sabe cuánto tiempo va a estar cortada la vía? Tengo que subir a Arroyo Frío esta tarde por trabajo. Espero que los servicios de mantenimiento puedan retirarlo pronto, con estas rachas de viento está la sierra peligrosa.</div>
+                </li>
+                <li>
+                    <div class="c-nombre"> Sergio Estepa Gómez </div> 
+                    <div class="c-hora"> 21:12 | 20/03/2026 </div>
+                    <div class="c-comentario"> Precaución a todos los que suban por la zona del control. Es un pino de gran porte y ocupa los dos carriles. Menos mal que no ha pillado a ningún coche debajo. ¡Ánimo a los operarios que están allí con las motosierras!</div>
+                </li>
+            </ul>
+        </aside>
+
+
+    </div>
+
+    <footer>
+        <ul>
+            <li> <a href="#">Identificación</a> </li>
+            <li> <a href="#">Web Ayuntamiento</a> </li>
+            <li class="footer-derecho">
+                <a href="#">Aviso Legal</a>
+                <section id="copy">
+                    &copy; Copyright
+                </section>
+            </li>
+        </ul> 
+    </footer>
+</body>
+</html>

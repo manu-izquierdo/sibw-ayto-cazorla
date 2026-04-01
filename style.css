@@ -1,0 +1,404 @@
+/*Fuente Montserrat, Open Sans y Roboto*/
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+/*
+Hacemos esto para que se comporte igual en todos los navegadores y el box-sizing para que si una caja
+mide 10px y le pongo relleno interno (padding o border), siga siendo 10px creciendo hacia adentro.
+*/
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    background-image: url(img/background2.png);
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-color: rgb(240, 244, 248);
+}
+
+/* Todos los enlaces tendrán este formato */
+body a {
+    text-decoration: none;
+    color: white;
+}
+
+body a:hover{
+    color: rgb(197, 160, 89);
+}
+
+/* Como solo uso las listas para menús les quito el punto */
+ul{
+    list-style: none;
+}
+
+/*====================*/
+/*=== portada.html ===*/
+/*====================*/
+
+/*__________________________________________________________________________________________________________________________________*/
+
+/* Encabezado */
+.encabezado{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    background-color: rgba(10, 102, 56, 0.9);
+    color: #F0F4F8;
+    position: static;
+}
+
+/* Logo Ayuntamiento Cazorla */
+#logo{
+    margin-top: 1rem;
+    height: 6rem;
+    width: auto;
+}
+
+.enlaces-encabezado li{
+    padding-top: 0.5rem;
+}
+
+/*__________________________________________________________________________________________________________________________________*/
+
+/* Aside + Main */
+.lateral-main{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap; /* Si falta espacio, los elementos se seguiran manteniendo en la misma linea */
+    gap: 1rem;
+}
+
+/* Aside */
+.menu-lateral {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 20vw;
+    min-width: 200px;
+    max-width: 500px;
+    background-color: rgba(230, 242, 235, 0.65);
+    padding: 1rem;
+}
+
+.menu-lateral ul li{
+    padding-top: 1rem;
+}
+
+.menu-lateral ul li a{
+    display: block;     /* Esto hace que el enlace (<a>) ocupe todo el ancho disponible en su caja, si no pusiera esto, solo funcionaría el enlace al clicar el texto */
+    background-color: rgba(10, 102, 56, 0.4);
+    color: rgb(240, 244, 248);
+    text-align: center;
+    border: 2px solid rgba(10, 102, 56, 0.9);
+    border-radius: 8px;
+    transition: all 0.3s ease;      /* Para todos los cambios de color que haya habrá una transicion de color de 0.3s*/
+    padding: 1rem;
+    font-weight: bold;
+}
+
+/* Al pasar el ratón por el 'li', ve a buscar etiquetas internas (a) y oblígales a ponerse blancas. */
+.menu-lateral ul li:hover a {
+    color: rgb(240, 244, 248);
+}
+
+.menu-lateral ul li a:hover {
+    border-radius: 8px;
+    background-color: rgba(10, 102, 56, 0.6);
+}
+
+/*__________________________________________________________________________________________________________________________________*/
+
+/* Main */
+.main-portada {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    flex-grow: 1;       /* Dado que el main está en un flexbox junto el aside le dice al <main> que use todo el espacio sobrante para él*/
+    margin-right: 1rem;
+    text-align: center;
+    gap: 1rem;
+}
+
+main a{
+    color: rgba(10, 102, 56, 0.9);
+}
+
+.main-portada img {
+    width: 100%;     /* Obliga a la imagen a no salirse de su columna del Grid */   
+    height: 200px;
+    object-fit: cover;  
+    border-radius: 8px;
+}
+
+/*__________________________________________________________________________________________________________________________________*/
+
+/* Footer */
+footer ul {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);        
+    background-color: rgba(10, 102, 56, 0.9);   
+    place-items: center;                          
+    padding: 1rem;                                
+}
+
+/* Para poner el aviso legal y copyright a la derecha */
+.footer-derecho {
+    display: flex;
+    flex-direction: column;     
+    align-items: flex-end;      
+    gap: 0.3rem                 
+}
+
+#copy{
+    font-size: 0.8rem;          
+}
+
+/*__________________________________________________________________________________________________________________________________*/
+
+
+/*====================*/
+/*= noticia.html P1 ==*/
+/*====================*/
+
+.main-noticia{
+    margin-right: 1rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    flex-grow: 1;
+}
+
+.articulo-contenedor{
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    margin: 10rem;
+    border-radius: 8px;
+    border: 3px solid black;
+}
+
+.header-noticia {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(10, 102, 56, 0.9);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.enlaces-redes {
+    position: fixed; 
+    top:18rem;
+    right: 13rem;
+    z-index: 1000;
+    flex-direction: row;
+    align-items: center;
+    align-self: flex-start;
+    gap:2rem;
+}
+
+.enlaces-redes a img{
+    height: 4rem;
+    width: auto;
+}
+
+.cuerpo-noticia {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Texto de la noticia */
+.texto-noticia {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Fotos de la noticia */
+.imagenes-noticia {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    justify-content: center;  /* Centra las fotos en el medio de la página */
+}
+
+.imagenes-noticia img {
+    max-width: 40%; /* Para que quepan dos fotos lado a lado sin salirse */
+    height: auto;
+    border-radius: 8px;
+}
+
+@media (max-width:700px){
+    .main-portada{
+    grid-template-columns: repeat(auto-fit, minmax(100px,1fr));
+}
+}
+
+/*__________________________________________________________________________________________________________________________________*/
+
+
+/*====================*/
+/*= noticia.html P2 ==*/
+/*====================*/
+
+.formulario{
+    position: fixed;
+    top: 0;
+    right: -400px;
+    height: 100vh;
+    width: 400px; 
+    background-color: rgb(215, 226, 220);
+    padding: 1rem;
+    z-index: 2000; /* Asegura que esté por encima de la cabecera y el texto */
+    transition: right 0.4s ease; /* Esto hará que se deslice suavemente cuando JS cambie el 'right' */
+    overflow-y: auto; /* Crea una barra de scroll interna si el contenido es largo */
+}
+
+#zona-derecha {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 15px;
+    height: 100vh;
+    z-index: 1998;
+}
+
+#pestana-abrir {
+    position: fixed;
+    top: 50%;                 
+    right: 0;
+    transform: translateY(-50%); 
+    width: 50px;
+    height: 60px;
+    background-color: rgba(10, 102, 56, 0.9); 
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    border-radius: 8px 0 0 8px; 
+    cursor: pointer;
+    z-index: 1999;
+}
+
+#pestana-abrir:hover {
+    background-color: #3e7a4d; /* Un verde un poco más claro al pasar el ratón */
+}
+
+.comments{
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    gap: 1rem;
+}
+
+.comments li {
+    padding: 0.5rem;    
+    background-color: white;
+    border-left: 2px solid rgba(10, 102, 56, 0.9);
+    border-radius: 8px;
+}
+
+.c-nombre {
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 700;
+    color: rgba(10, 102, 56, 0.9);
+}
+
+.c-hora {
+    font-family: "Roboto", sans-serif;
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0.5rem 0rem;    /* 0.5 arriba y abajo y 0 en el margen izquierdo y derecho*/
+
+}
+
+.c-comentario {
+    font-family: 'Open Sans',sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #2c3e50;
+}
+
+#cancel{
+  background: none;
+  border: none;
+  cursor: pointer;        /* Hace que aparezca la mano al pasar el ratón */
+  font-size: 25px;        /* Tamaño de la X */
+  color: black;
+}
+
+#cancel:hover {
+  color: rgba(10, 102, 56, 0.9);
+}
+
+.bloque-formulario {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: white;
+    border: 2px solid rgba(10, 102, 56, 0.9);
+    border-radius: 8px;
+    display: none;
+    transition: right 0.4s ease; /* Esto hará que se deslice suavemente cuando JS cambie el 'right' */
+
+}
+
+/* Los elementos input del nuevo comentario tendrán este formato */
+.input-estilo{
+    font-family: 'Open Sans',sans-serif;
+    padding: 0.2rem 0.5rem;
+}
+
+.botones-comentario{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Le dice al navegador que el elemento tiene permiso para "estirarse" 
+y ocupar cualquier espacio vacío que encuentre en el contenedor padre.*/
+.botones-comentario button{
+    flex: 1;
+}
+
+
+#boton-bloque-formulario {
+    position: fixed;         /* Se queda fijo aunque hagas scroll */
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;             /* Ancho fijo para que sea un círculo */
+    height: 60px;            /* Alto fijo */
+    background-color: rgba(8, 83, 45, 0.9); /* Tu verde corporativo */
+    color: white;
+    border: none;
+    border-radius: 50%;      /* Lo hace circular */
+    font-size: 1.7rem;         /* Tamaño del icono + */
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Sombra para que "flote" */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    z-index: 1000;           /* Para que esté siempre por encima de los comentarios */
+    display: none;
+}
+
+#boton-bloque-formulario:hover {
+    background-color: #3e7a4d;
+    transform: scale(1.1);   /* Se agranda un poquito al pasar el ratón */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
