@@ -15,7 +15,7 @@ mide 10px y le pongo relleno interno (padding o border), siga siendo 10px crecie
 
 /* Body */
 body {
-    background-image: url(img/background2.png);
+    background-image: url(../img/background2.png);
     background-size: cover;
     background-position: center center;
     background-attachment: fixed;
