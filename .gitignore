@@ -1,0 +1,18 @@
+# --- IDEs ---
+.vscode/
+*.code-workspace
+.idea/
+
+# --- SO ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs ---
+*.log
+npm-debug.log*
+.cache/
+
+# --- Otros---
+*.psd
+*.ai
