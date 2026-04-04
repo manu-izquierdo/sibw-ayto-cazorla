@@ -1,39 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayuntamiento de Cazorla</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
+{% extends "base.html.twig" %}
 
-<body>
-    <nav class="encabezado">
-        <!-- Envuelvo dentro de un enlace la imagen para que sea clicable, esta llevará a la pagina de inicio-->
-        <a href="portada.html">
-            <img src="img/logo.png" alt="Logo Ayuntamiento de Cazorla" id="logo" title="Inicio">
-        </a>
-
-        <h1> Ayuntamiento de cazorla</h1>
-        
-        <ul class="enlaces-encabezado">
-            <li> <a href="#">Iniciar sesión</a> </li>
-            <li> <a href="#">Contacto</a> </li>
-            <li> <a href="#">FAQ</a> </li>
-        </ul>
-    </nav>
-
-    <div class="lateral-main">
-        <aside class="menu-lateral">
-            <ul>
-                <li> <a href="#"> Subir Incidencia </a> </li>
-                <li> <a href="#"> Eliminar Incidencia </a> </li>
-                <li> <a href="#"> Estadísticas </a> </li>
-            </ul>
-        </aside>
+{% block cuerpo %}
 
         <main class="main-portada">
-            <a href="noticia.html">
+            <a href="noticia.php">
                 <article>
                     <figure>
                         <img src="img/noticia.png" alt="Incidencia 1">
@@ -41,7 +11,7 @@
                     </figure>   
                 </article>
             </a>
-            <a href="noticia.html">
+            <a href="noticia.php">
                 <article>
                     <figure>
                         <img src="img/noticia.png" alt="Incidencia 2">
@@ -49,7 +19,7 @@
                     </figure>   
                 </article>
             </a>
-            <a href="noticia.html">
+            <a href="noticia.php">
                 <article>
                     <figure>
                         <img src="img/noticia.png" alt="Incidencia 3">
@@ -57,7 +27,7 @@
                     </figure>   
                 </article>
             </a>
-            <a href="noticia.html">
+            <a href="noticia.php">
                 <article>
                     <figure>
                         <img src="img/noticia.png" alt="Incidencia 4">
@@ -65,7 +35,7 @@
                     </figure>   
                 </article>
             </a>
-            <a href="noticia.html">
+            <a href="noticia.php">
                 <article>
                     <figure>
                         <img src="img/noticia.png" alt="Incidencia 5">
@@ -73,7 +43,7 @@
                     </figure>   
                 </article>
             </a>
-            <a href="noticia.html">
+            <a href="noticia.php">
                 <article>
                     <figure>
                         <img src="img/noticia.png" alt="Incidencia 6">
@@ -81,7 +51,7 @@
                     </figure>   
                 </article>
             </a>
-            <a href="noticia.html">
+            <a href="noticia.php">
                 <article>
                     <figure>
                         <img src="img/noticia.png" alt="Incidencia 7">
@@ -89,7 +59,7 @@
                     </figure>   
                 </article>
             </a>
-            <a href="noticia.html">
+            <a href="noticia.php">
                 <article>
                     <figure>
                         <img src="img/noticia.png" alt="Incidencia 8">
@@ -100,17 +70,4 @@
         </main>
     </div>
 
-    <footer>
-        <ul>
-            <li> <a href="#">Identificación</a> </li>
-            <li> <a href="#">Web Ayuntamiento</a> </li>
-            <li class="footer-derecho">
-                <a href="#">Aviso Legal</a>
-                <section id="copy">
-                    &copy; Copyright
-                </section>
-            </li>
-        </ul> 
-    </footer>
-</body>
-</html>
+{% endblock %}

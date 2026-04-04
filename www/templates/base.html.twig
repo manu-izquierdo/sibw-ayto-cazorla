@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ayuntamiento de Cazorla</title>
+    {% block formatoCss %}
     <link rel="stylesheet" href="css/style.css">
+    {% endblock %}
 </head>
 
 <body>
     <nav class="encabezado">
         <!-- Envuelvo dentro de un enlace la imagen para que sea clicable, esta llevará a la pagina de inicio-->
-        <a href="portada.html">
+        <a href="index.php">
             <img src="img/logo.png" alt="Logo Ayuntamiento de Cazorla" id="logo" title="Inicio">
         </a>
 
@@ -32,73 +34,7 @@
             </ul>
         </aside>
 
-        <main class="main-portada">
-            <a href="noticia.html">
-                <article>
-                    <figure>
-                        <img src="img/noticia.png" alt="Incidencia 1">
-                        <figcaption> Caída de un pino </figcaption>
-                    </figure>   
-                </article>
-            </a>
-            <a href="noticia.html">
-                <article>
-                    <figure>
-                        <img src="img/noticia.png" alt="Incidencia 2">
-                        <figcaption> Caída de un pino </figcaption>
-                    </figure>   
-                </article>
-            </a>
-            <a href="noticia.html">
-                <article>
-                    <figure>
-                        <img src="img/noticia.png" alt="Incidencia 3">
-                        <figcaption> Caída de un pino </figcaption>
-                    </figure>   
-                </article>
-            </a>
-            <a href="noticia.html">
-                <article>
-                    <figure>
-                        <img src="img/noticia.png" alt="Incidencia 4">
-                        <figcaption> Caída de un pino </figcaption>
-                    </figure>   
-                </article>
-            </a>
-            <a href="noticia.html">
-                <article>
-                    <figure>
-                        <img src="img/noticia.png" alt="Incidencia 5">
-                        <figcaption> Caída de un pino </figcaption>
-                    </figure>   
-                </article>
-            </a>
-            <a href="noticia.html">
-                <article>
-                    <figure>
-                        <img src="img/noticia.png" alt="Incidencia 6">
-                        <figcaption> Caída de un pino </figcaption>
-                    </figure>   
-                </article>
-            </a>
-            <a href="noticia.html">
-                <article>
-                    <figure>
-                        <img src="img/noticia.png" alt="Incidencia 7">
-                        <figcaption> Caída de un pino </figcaption>
-                    </figure>   
-                </article>
-            </a>
-            <a href="noticia.html">
-                <article>
-                    <figure>
-                        <img src="img/noticia.png" alt="Incidencia 8">
-                        <figcaption> Caída de un pino </figcaption>
-                    </figure>   
-                </article>
-            </a>
-        </main>
-    </div>
+    {% block cuerpo %}<p> No se ha podido renderizar </p>{% endblock %}
 
     <footer>
         <ul>
