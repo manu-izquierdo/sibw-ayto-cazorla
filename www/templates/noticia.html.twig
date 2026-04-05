@@ -28,7 +28,8 @@
 
             <section class="cuerpo-noticia">
                 <div class="texto-noticia">
-                    <p> {{ noticia.descripcion }} </p>
+                    {# raw se usa para que el navegador entienda que es HTML real y no simple texto #}
+                    <p> {{ noticia.descripcion|raw }} </p>
                 </div>
                 <div class="imagenes-noticia">
                     {% for img in imagenes %}
