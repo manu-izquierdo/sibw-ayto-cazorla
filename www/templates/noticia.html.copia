@@ -17,7 +17,7 @@
     <main class="main-noticia">
         <article class="articulo-contenedor">
             <header class="header-noticia">
-                <h1> {{ noticia.titulo }} </h1>
+                <h1> Corte de tráfico temporal por la caída de un pino </h1>
                 <div class="enlaces-redes">
                     <a href="#"> <img src="img/Social/TikTok.png" alt="Tiktok"> </a>
                     <a href="https://www.instagram.com/aytocazorla/?hl=es" target="_blank"> <img src="img/Social/IG.png" alt="Instragram"> </a>
@@ -28,12 +28,26 @@
 
             <section class="cuerpo-noticia">
                 <div class="texto-noticia">
-                    <p> {{ noticia.descripcion }} </p>
+                    <p>
+                        El Ayuntamiento de Cazorla informa a todos los vecinos y visitantes que la carretera A-319, en el tramo 
+                        de subida hacia el Empalme del Valle, permanecerá cortada al tráfico durante la mañana de hoy debido a la caída de 
+                        un pino de grandes dimensiones sobre la calzada, provocada por las fuertes rachas de viento de la pasada madrugada.
+                    </p>
+                    <p>
+                        Afortunadamente, no hay que lamentar daños personales ni materiales de gravedad en los vehículos que 
+                        transitaban la zona. Efectivos de la Policía Local, junto con los servicios de mantenimiento del Parque Natural 
+                        y los Bomberos, ya se encuentran en el lugar trabajando en las labores de troceado y retirada del tronco.
+                    </p>
+                    <p>
+                        Se recomienda a los conductores que necesiten acceder a la sierra que utilicen rutas alternativas y extremen 
+                        la precaución, ya que la alerta amarilla por fuertes vientos seguirá activa hasta las 18:00 horas. Informaremos 
+                        de la reapertura de la vía a través de nuestros canales oficiales y redes sociales en cuanto los operarios finalicen 
+                        las tareas de limpieza.
+                    </p>
                 </div>
                 <div class="imagenes-noticia">
-                    {% for img in imagenes %}
-                        <img src="{{ img.ruta }}" alt="Foto de la noticia">
-                    {% endfor %}
+                    <img src="img/noticia.png" alt="Foto de la noticia">
+                    <img src="img/noticia2.png" alt="Otra foto de la noticia">
                 </div>
             </section>
         </article>
