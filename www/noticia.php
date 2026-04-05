@@ -4,18 +4,28 @@
     $loader = new \Twig\Loader\FilesystemLoader('templates');
     $twig = new \Twig\Environment($loader);
 
+    $host = "lamp-mysql8";
+    $db   = "sibw";
+    $user = "manu_sibw";
+    $pass = "practica3";
 
-    $mysqli = new mysqli("lamp-mysql8", "root", "tiger", "sibw");
-    
-    // 2. Validación del parámetro GET
-    $idEvt = isset($_GET['id']) ? (int)$_GET['id'] : 1;
+    $mysqli = new mysqli($host, $user, $pass, $db);
 
-    // 3. Consulta de la noticia
-    $res = $mysqli->query("SELECT * FROM noticias WHERE id = $idEvt");
+    if ($mysqli->connect_error) {
+        die("Error de conexión: " . $mysqli->connect_error);
+    }
+
+    // Validación del parámetro GET
+    $id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
+
+    // Consultas de la noticia y sus imagenes
+    $sql_noticia = "SELECT * FROM noticias WHERE id = $id";
+    $sql_imagenes = "SELECT ruta FROM imagenes WHERE noticia_id = $id";
+
+    $res = $mysqli->query($sql_noticia);
     $noticia = $res->fetch_assoc();
 
-    // 4. Consulta de imágenes relacionadas
-    $resImgs = $mysqli->query("SELECT * FROM imagenes WHERE noticia_id = $idEvt");
+    $resImgs = $mysqli->query($sql_imagenes);
     $imagenes = $resImgs->fetch_all(MYSQLI_ASSOC);
 
     echo $twig->render('noticia.html.twig', [

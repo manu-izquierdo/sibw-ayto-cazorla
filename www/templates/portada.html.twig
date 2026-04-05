@@ -5,70 +5,19 @@
 {% block cuerpo %}
 
     <main class="main-portada">
-        <a href="noticia.php">
-            <article>
-                <figure>
-                    <img src="img/noticia.png" alt="Incidencia 1">
-                    <figcaption> Caída de un pino </figcaption>
-                </figure>   
-            </article>
-        </a>
-        <a href="noticia.php">
-            <article>
-                <figure>
-                    <img src="img/noticia.png" alt="Incidencia 2">
-                    <figcaption> Caída de un pino </figcaption>
-                </figure>   
-            </article>
-        </a>
-        <a href="noticia.php">
-            <article>
-                <figure>
-                    <img src="img/noticia.png" alt="Incidencia 3">
-                    <figcaption> Caída de un pino </figcaption>
-                </figure>   
-            </article>
-        </a>
-        <a href="noticia.php">
-            <article>
-                <figure>
-                    <img src="img/noticia.png" alt="Incidencia 4">
-                    <figcaption> Caída de un pino </figcaption>
-                </figure>   
-            </article>
-        </a>
-        <a href="noticia.php">
-            <article>
-                <figure>
-                    <img src="img/noticia.png" alt="Incidencia 5">
-                    <figcaption> Caída de un pino </figcaption>
-                </figure>   
-            </article>
-        </a>
-        <a href="noticia.php">
-            <article>
-                <figure>
-                    <img src="img/noticia.png" alt="Incidencia 6">
-                    <figcaption> Caída de un pino </figcaption>
-                </figure>   
-            </article>
-        </a>
-        <a href="noticia.php">
-            <article>
-                <figure>
-                    <img src="img/noticia.png" alt="Incidencia 7">
-                    <figcaption> Caída de un pino </figcaption>
-                </figure>   
-            </article>
-        </a>
-        <a href="noticia.php">
-            <article>
-                <figure>
-                    <img src="img/noticia.png" alt="Incidencia 8">
-                    <figcaption> Caída de un pino </figcaption>
-                </figure>   
-            </article>
-        </a>
+        {% for noticia in noticias %}
+            <a href="noticia.php?id={{ noticia.id }}">
+                <article>
+                    <figure>
+                        {# Si no hay imagen asociada, usamos una por defecto #}
+                        <img src="{{ noticia.ruta|default('img/prueba.jpg') }}" alt="{{ noticia.titulo }}">
+                        <figcaption> {{ noticia.titulo }} </figcaption>
+                    </figure>   
+                </article>
+            </a>
+        {% else %}
+            <p>No hay noticias disponibles en este momento.</p>
+        {% endfor %}
     </main>
 
 {% endblock %}
