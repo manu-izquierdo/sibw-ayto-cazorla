@@ -50,15 +50,17 @@
         <button id="cancel">&times;</button>
         <button id="boton-bloque-formulario"> <i class="fa-solid fa-plus"></i> </button>
         
-        <form class="bloque-formulario" >
+        <form class="bloque-formulario" action="noticia.php?id={{ noticia.id }}" method="POST">
+            <input type="hidden" name="noticia_id" value="{{ noticia.id }}">
+
             <label for="autor-comentario">Nombre:</label>
-            <input type="text" name="nombre" class="input-estilo" id="autor-comentario">
+            <input type="text" name="nombre" class="input-estilo" id="autor-comentario" required>
             
             <label for="email-comentario">Correo:</label>
-            <input type="email" name="email" class="input-estilo" id="email-comentario">
+            <input type="email" name="email" class="input-estilo" id="email-comentario" required>
 
             <label for="texto-comentario">Texto:</label>
-            <textarea name="text" class="input-estilo" id="texto-comentario" rows="6"></textarea>
+            <textarea name="text" class="input-estilo" id="texto-comentario" rows="6" required></textarea>
 
             <div class="botones-comentario">
                 <button type="button" id="cancelar-comentario">Cancelar</button>
@@ -67,21 +69,15 @@
         </form>
 
         <ul class="comments">
-            <li> 
-                <div class="c-nombre"> Juan Carlos Ruiz </div> 
-                <div class="c-hora"> hace 14 minutos | 22 mar. 2026 </div>
-                <div class="c-comentario"> ¡Vaya susto! Justo pasé por ahí hace media hora y se veía el pino algo inclinado por el viento. Gracias al Ayuntamiento de Cazorla por avisar rápido, mejor dar la vuelta por la carretera de El Valle para no quedarse atrapado.</div>
-            </li>
-            <li> 
-                <div class="c-nombre"> Elena M. Serrano </div> 
-                <div class="c-hora"> 9:35 | 21/03/2026 </div>
-                <div class="c-comentario"> ¿Se sabe cuánto tiempo va a estar cortada la vía? Tengo que subir a Arroyo Frío esta tarde por trabajo. Espero que los servicios de mantenimiento puedan retirarlo pronto, con estas rachas de viento está la sierra peligrosa.</div>
-            </li>
-            <li>
-                <div class="c-nombre"> Sergio Estepa Gómez </div> 
-                <div class="c-hora"> 21:12 | 20/03/2026 </div>
-                <div class="c-comentario"> Precaución a todos los que suban por la zona del control. Es un pino de gran porte y ocupa los dos carriles. Menos mal que no ha pillado a ningún coche debajo. ¡Ánimo a los operarios que están allí con las motosierras!</div>
-            </li>
+            {% for comentario in comentarios %}
+                <li> 
+                    <div class="c-nombre"> {{ comentario.nombre }} </div> 
+                    <div class="c-hora"> {{ comentario.fecha|date("H:i | d/m/Y") }} </div>
+                    <div class="c-comentario"> {{ comentario.texto }} </div>
+                </li>
+            {% else %}
+                <li><div class="c-comentario">No hay comentarios aún.</div></li>
+            {% endfor %}
         </ul>
     </aside>
 

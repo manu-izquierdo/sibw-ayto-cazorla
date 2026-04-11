@@ -1,9 +1,6 @@
 <?php
     require_once "/usr/local/lib/php/vendor/autoload.php";
 
-    $loader = new \Twig\Loader\FilesystemLoader('templates');
-    $twig = new \Twig\Environment($loader);
-
     $host = "lamp-mysql8";
     $db   = "sibw";
     $user = "manu_sibw";
@@ -27,8 +24,13 @@
     }
 
     $noticias = $resultado->fetch_all(MYSQLI_ASSOC);
+    if (!$noticias) {
+        die("Error 404: La pagina solicitada no existe.");
+    }
 
-    
+    $loader = new \Twig\Loader\FilesystemLoader('templates');
+    $twig = new \Twig\Environment($loader);
+
     echo $twig->render('portada.html.twig', [
         'noticias' => $noticias
     ]);

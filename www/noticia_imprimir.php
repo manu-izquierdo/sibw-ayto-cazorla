@@ -1,9 +1,6 @@
 <?php
     require_once "/usr/local/lib/php/vendor/autoload.php";
 
-    $loader = new \Twig\Loader\FilesystemLoader('templates');
-    $twig = new \Twig\Environment($loader);
-
     $host = "lamp-mysql8";
     $db   = "sibw";
     $user = "manu_sibw";
@@ -27,6 +24,9 @@
 
     $resImgs = $mysqli->query($sql_imagenes);
     $imagenes = $resImgs->fetch_all(MYSQLI_ASSOC);
+
+    $loader = new \Twig\Loader\FilesystemLoader('templates');
+    $twig = new \Twig\Environment($loader);
 
     echo $twig->render('noticia_imprimir.html.twig', [
         'noticia' => $noticia,
