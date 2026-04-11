@@ -1,17 +1,7 @@
 <?php
     require_once "/usr/local/lib/php/vendor/autoload.php";
-
-    $host = "lamp-mysql8";
-    $db   = "sibw";
-    $user = "manu_sibw";
-    $pass = "practica3";
-
-    $mysqli = new mysqli($host, $user, $pass, $db);
-
-    if ($mysqli->connect_error) {
-        die("Error de conexión: " . $mysqli->connect_error);
-    }
-
+    require_once "bd.php";
+    
     // Validación del parámetro GET
     $id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
 

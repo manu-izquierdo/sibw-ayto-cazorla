@@ -1,16 +1,11 @@
 <?php
     require_once "/usr/local/lib/php/vendor/autoload.php";
-
-    $host = "lamp-mysql8";
-    $db   = "sibw";
-    $user = "manu_sibw";
-    $pass = "practica3";
-
-    $mysqli = new mysqli($host, $user, $pass, $db);
+    require_once "bd.php"; // Incluyo la conexión a la base de datos centralizada
 
     //_________________________________________________________________________________________________________
         // Procesamiento del formulario POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
         // 1. Recepción y validación básica de existencia
         $noticia_id_post = isset($_POST['noticia_id']) ? intval($_POST['noticia_id']) : 0;
         $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
@@ -41,11 +36,6 @@
         }
     }
     //_________________________________________________________________________________________________________
-
-
-    if ($mysqli->connect_error) {
-        die("Error de conexión: " . $mysqli->connect_error);
-    }
 
     // Validación del parámetro GET
     $id = isset($_GET['id']) ? (int)$_GET['id'] : 1;

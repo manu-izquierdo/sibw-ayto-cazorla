@@ -57,63 +57,34 @@ cerrarFormulario.addEventListener("click",function(){
 
 
 
-// Mostrar con el resto de comentarios el comentario escrito
-// Escuchamos el evento 'submit' (enviar) directamente en el formulario
+// Validación del formulario antes de enviarlo al servidor
 formulario.addEventListener("submit", function(event) {
-    // Frenamos en seco al navegador para que no recargue la página
-    event.preventDefault(); 
     
-    // Sacamos el valor (.value) de lo que el usuario ha escrito
-    const valorNombre = inputNombre.value;
-    const valorEmail = inputEmail.value;
-    const valorTexto = inputTexto.value;
+    // Obtenemos los valores limpiando los espacios en blanco de los extremos
+    const valorNombre = inputNombre.value.trim();
+    const valorEmail = inputEmail.value.trim();
+    const valorTexto = inputTexto.value.trim();
 
-    // Si hay alguno de los tres campos vacíos salta un alert avisando que se deben rellenar
-    if((valorNombre=='')||(valorEmail=='')||(valorTexto=='')){
+    // 1. Validación de campos vacíos
+    if (valorNombre === '' || valorEmail === '' || valorTexto === '') {
+        event.preventDefault(); // FRENAMOS EL ENVÍO AL SERVIDOR PORQUE HAY UN ERROR
         alert("Debe rellenar obligatoriamente los campos del formulario");
         return;
     }
 
-    // Expresión regular para validar que el email introducido es válido
+    // 2. Validación de formato de email
     const emailRegex = /^[a-zA-Z0-9áéíóúñÁÉÍÓÚÑ._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(valorEmail)) {
+        event.preventDefault(); // FRENAMOS EL ENVÍO AL SERVIDOR PORQUE HAY UN ERROR
         alert("Por favor, introduce un correo electrónico válido (ejemplo: usuario@dominio.com)");
         return;
     }
 
-    // Selecciona la lista HTML donde van los comentarios
-    const lista = document.querySelector('.comments');
-
-    // Crea la fecha actual
-    const ahora = new Date();
-    // Obtener la hora y minutos (asegurando dos dígitos para los minutos)
-    const hora = ahora.getHours();
-    const minutos = String(ahora.getMinutes()).padStart(2, '0');
-    // Obtener la fecha en formato local (DD/MM/YYYY)
-    const fecha = ahora.toLocaleDateString('es-ES');
-    const fechaHoy = `${hora}:${minutos} | ${fecha}`;
-
-    // Construimos el HTML del nuevo comentario mezclando código y variables
-    // Usamos ( ` ) para poder meter variables dentro con ${ }
-    const nuevoHTML = `
-        <li> 
-            <div class="c-nombre"> ${valorNombre} </div> 
-            <div class="c-hora"> ${fechaHoy} </div>
-            <div class="c-comentario"> ${valorTexto} </div>
-        </li>
-    `;
-
-    // Lo inyectamos al inicio de la lista
-    // innerHTML saca el HTML actual de la lista. Le sumamos el nuevo delante.
-    lista.innerHTML = nuevoHTML + lista.innerHTML;
-
-    // Ocultamos el formulario y limpiamos los campos
-    formulario.style.display = 'none';
-    inputNombre.value = '';
-    inputEmail.value = '';
-    inputTexto.value = '';
-    abrirFormulario.style.display = 'flex';
-
+    // 3. Envío al Backend
+    // IMPORTANTE: Hemos borrado toda la manipulación del DOM (crear <li>, inyectar HTML, etc.).
+    // Al NO ejecutar event.preventDefault() en este punto de éxito, el navegador continuará 
+    // con su comportamiento nativo: empaquetar los inputs y enviarlos por el método POST 
+    // hacia la URL definida en el action del <form> (tu archivo noticia.php).
 });
 
 // Si el campo inputTexto escucha un texto que coincida con alguno de la lista inicial "localidades" lo pone en mayúscula y lo reemplaza 
