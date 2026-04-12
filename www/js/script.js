@@ -8,18 +8,6 @@ const cerrarFormulario = document.getElementById('cancelar-comentario');
 const inputNombre = document.getElementById('autor-comentario');
 const inputEmail = document.getElementById('email-comentario');
 const inputTexto = document.getElementById('texto-comentario');
-const localidades = [
-  "La Iruela",
-  "Arroyo Frío",
-  "Burunchel",
-  "Quesada",
-  "Peal de Becerro",
-  "Santo Tomé",
-  "Chilluévar",
-  "Hinojares",
-  "Pozo Alcón",
-  "Hornos de Segura"
-];
 
 // Activa el panel lateral al acercar el ratón a la derecha de la pantalla
 zonaActiva.addEventListener('mouseenter', function() {
@@ -88,8 +76,21 @@ formulario.addEventListener("submit", function(event) {
 });
 
 // Si el campo inputTexto escucha un texto que coincida con alguno de la lista inicial "localidades" lo pone en mayúscula y lo reemplaza 
+// inputTexto.addEventListener("input", function() {
+//     let valorTexto = inputTexto.value;
+//     localidades.forEach(pueblo => {
+//         const regex = new RegExp(`\\b${pueblo}\\b`, 'gi');
+//         valorTexto = valorTexto.replace(regex, pueblo.toUpperCase());
+//     });
+
+//     inputTexto.value = valorTexto;
+// });
+
+
 inputTexto.addEventListener("input", function() {
     let valorTexto = inputTexto.value;
+    
+    // El iterador utiliza la variable global 'localidades'
     localidades.forEach(pueblo => {
         const regex = new RegExp(`\\b${pueblo}\\b`, 'gi');
         valorTexto = valorTexto.replace(regex, pueblo.toUpperCase());
