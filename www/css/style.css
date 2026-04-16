@@ -224,6 +224,7 @@ footer ul {
 /* Fotos de la noticia */
 .imagenes-noticia {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     gap: 1.5rem;
     justify-content: center;  /* Centra las fotos en el medio de la página */
