@@ -6,44 +6,33 @@
         // Procesamiento del formulario POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // 1. Recepción y validación básica de existencia
         $noticia_id_post = isset($_POST['noticia_id']) ? intval($_POST['noticia_id']) : 0;
         $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
         $email = isset($_POST['email']) ? trim($_POST['email']) : '';
         $texto = isset($_POST['texto']) ? trim($_POST['texto']) : '';
 
-
-        if ($noticia_id_post > 0 && $nombre !== '' && $email !== '' && $texto !== '') {
+        // Validación estricta del email
+        if ($noticia_id_post > 0 && $nombre !== '' && $texto !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
         
-            // --- NUEVO: FILTRO DE LOCALIDADES EN BACKEND ---
-            // 1. Obtener la lista de lugares desde la base de datos
+            // Filtro de localidades en Backend
             $resLugares = $mysqli->query("SELECT nombre FROM lugares");
             if ($resLugares) {
                 $lugaresBD = $resLugares->fetch_all(MYSQLI_ASSOC);
-                
-                // 2. Aplicar el filtro a la variable $texto
                 foreach ($lugaresBD as $lugar) {
                     $pueblo = $lugar['nombre'];
-                    // Creamos el patrón: \b (límite de palabra), 'i' (case insensitive)
-                    // preg_quote evita que caracteres especiales en el nombre rompan la expresión
                     $patron = '/\b' . preg_quote($pueblo, '/') . '\b/i';
                     $texto = preg_replace($patron, strtoupper($pueblo), $texto);
                 }
             }
-    
-            // 3. Sentencia Preparada: Se usan '?' como marcadores de posición
+
+            // Inserción segura con Sentencia Preparada
             $stmt = $mysqli->prepare("INSERT INTO comentarios (noticia_id, nombre, email, texto) VALUES (?, ?, ?, ?)");
             
             if ($stmt) {
-                // 4. Vinculación de parámetros (Bind)
-                // 'isss' indica los tipos de datos: i (integer), s (string), s (string), s (string)
                 $stmt->bind_param("isss", $noticia_id_post, $nombre, $email, $texto);
                 $stmt->execute();
                 $stmt->close();
 
-                // 5. Patrón PRG (Post/Redirect/Get)
-                // Se redirige a la misma página por GET para evitar que al recargar el navegador 
-                // se vuelva a enviar el formulario duplicando el comentario.
                 header("Location: noticia.php?id=" . $noticia_id_post);
                 exit;
             } else {
