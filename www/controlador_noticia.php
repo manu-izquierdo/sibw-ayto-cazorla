@@ -1,6 +1,5 @@
 <?php
-    require_once "/usr/local/lib/php/vendor/autoload.php";
-    require_once "bd.php"; // Incluyo la conexión a la base de datos centralizada
+    // Ya NO hay require_once...
 
     //_________________________________________________________________________________________________________
         // Procesamiento del formulario POST
@@ -33,7 +32,7 @@
                 $stmt->execute();
                 $stmt->close();
 
-                header("Location: noticia.php?id=" . $noticia_id_post);
+                header("Location: /noticia/" . $noticia_id_post);
                 exit;
             } else {
                 die("Error en la preparación de la consulta de inserción.");
@@ -42,9 +41,9 @@
     }
     //_________________________________________________________________________________________________________
 
-    // Validación del parámetro GET
-    $id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
 
+    // La variable $id ya existe mágicamente porque el index.php se la inyecta antes de cargar este archivo.
+    
     // Consultas de la noticia y sus imagenes
     $sql_noticia = "SELECT * FROM noticias WHERE id = $id";
     $sql_imagenes = "SELECT ruta FROM imagenes WHERE noticia_id = $id";
@@ -71,10 +70,8 @@
         $listaLugares[] = $lugar['nombre'];
     }
 
-
-    $loader = new \Twig\Loader\FilesystemLoader('templates');
-    $twig = new \Twig\Environment($loader);
-
+    // Ya NO hay $loader ni $twig = new...
+    
     echo $twig->render('noticia.html.twig', [
         'noticia' => $noticia,
         'imagenes' => $imagenes,

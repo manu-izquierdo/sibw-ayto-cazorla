@@ -1,0 +1,7 @@
+RewriteEngine On
+# Si lo que el usuario pide NO es un archivo real que existe en el disco...
+RewriteCond %{REQUEST_FILENAME} !-f
+# ...y NO es un directorio real...
+RewriteCond %{REQUEST_FILENAME} !-d
+# ...entonces, redirige todo a index.php guardando la ruta original en una variable llamada 'ruta'
+RewriteRule ^(.*)$ index.php?ruta=$1 [QSA,L]

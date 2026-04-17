@@ -6,7 +6,7 @@
 
     <main class="main-portada">
         {% for noticia in noticias %}
-            <a href="noticia.php?id={{ noticia.id }}">
+            <a href="/noticia/{{ noticia.id }}">
                 <article>
                     <figure>
                         {# Si no hay imagen asociada, usamos una por defecto #}
