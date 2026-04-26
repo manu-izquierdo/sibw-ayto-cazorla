@@ -1,7 +1,6 @@
 <?php
-    // Ya NO hay require_once de autoload ni de bd.php
+    // Ya NO hay require_once de autoload ni de bd.php por hacerlos dentro del index.php, este "hereda" las variables $mysqli y $twig
 
-    // Consulta SQL directamente
     $sql = "SELECT n.id, n.titulo, MIN(i.ruta) as ruta
             FROM noticias n
             LEFT JOIN imagenes i ON n.id = i.noticia_id
@@ -17,8 +16,6 @@
     if (!$noticias) {
         die("Error 404: La pagina solicitada no existe.");
     }
-
-    // Ya NO hay $loader ni $twig = new... 
     
     echo $twig->render('portada.html.twig', [
         'noticias' => $noticias

@@ -1,37 +1,36 @@
 <?php
-    // Ya NO hay require_once...
-
-    //_________________________________________________________________________________________________________
-        // Procesamiento del formulario POST
+    // Procesamiento del formulario POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+        // Me aseguro que el ID sea un número y quito espacios sobrantes
         $noticia_id_post = isset($_POST['noticia_id']) ? intval($_POST['noticia_id']) : 0;
         $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
         $email = isset($_POST['email']) ? trim($_POST['email']) : '';
         $texto = isset($_POST['texto']) ? trim($_POST['texto']) : '';
 
-        // Validación estricta del email
+        // Validación del email
         if ($noticia_id_post > 0 && $nombre !== '' && $texto !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
         
-            // Filtro de localidades en Backend
+            // Filtro de localidades
             $resLugares = $mysqli->query("SELECT nombre FROM lugares");
             if ($resLugares) {
                 $lugaresBD = $resLugares->fetch_all(MYSQLI_ASSOC);
                 foreach ($lugaresBD as $lugar) {
-                    $pueblo = $lugar['nombre'];
+                    // Toma los lugares de la BD en la consulta de antes y los compara con el introducido, si coincide, pone el pueblo en mayúscula con preg_replace
+                    $pueblo = $lugar['nombre']; 
                     $patron = '/\b' . preg_quote($pueblo, '/') . '\b/i';
                     $texto = preg_replace($patron, strtoupper($pueblo), $texto);
                 }
             }
 
-            // Inserción segura con Sentencia Preparada
+            // Inserción segura con prepare (evita inyecciones de SQL)
             $stmt = $mysqli->prepare("INSERT INTO comentarios (noticia_id, nombre, email, texto) VALUES (?, ?, ?, ?)");
             
             if ($stmt) {
-                $stmt->bind_param("isss", $noticia_id_post, $nombre, $email, $texto);
-                $stmt->execute();
+                $stmt->bind_param("isss", $noticia_id_post, $nombre, $email, $texto); // "isss" es una cadena que le dice a PHP qué tipo de datos vas a meter en los huecos (?) de la consulta
                 $stmt->close();
 
+                // si el usuario refresca el navegador, no se envíe el comentario dos veces.
                 header("Location: /noticia/" . $noticia_id_post);
                 exit;
             } else {
@@ -39,12 +38,8 @@
             }
         }
     }
-    //_________________________________________________________________________________________________________
 
-
-    // La variable $id ya existe mágicamente porque el index.php se la inyecta antes de cargar este archivo.
-    
-    // Consultas de la noticia y sus imagenes
+    // La variable $id ya existe, index.php se la inyecta antes de cargar este archivo
     $sql_noticia = "SELECT * FROM noticias WHERE id = $id";
     $sql_imagenes = "SELECT ruta FROM imagenes WHERE noticia_id = $id";
     $sql_comments = "SELECT * FROM comentarios WHERE noticia_id = $id ORDER BY fecha DESC";
@@ -62,15 +57,13 @@
     $resComentarios = $mysqli->query($sql_comments);
     $comentarios = $resComentarios->fetch_all(MYSQLI_ASSOC);
 
-
     $resLugaresFiltro = $mysqli->query($sql_lugar);
     $lugaresBD = $resLugaresFiltro->fetch_all(MYSQLI_ASSOC);
+    
     $listaLugares = [];
     foreach ($lugaresBD as $lugar) {
         $listaLugares[] = $lugar['nombre'];
     }
-
-    // Ya NO hay $loader ni $twig = new...
     
     echo $twig->render('noticia.html.twig', [
         'noticia' => $noticia,

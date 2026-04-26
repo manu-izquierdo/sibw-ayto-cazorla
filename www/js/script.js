@@ -69,7 +69,7 @@ formulario.addEventListener("submit", function(event) {
     }
 
     // 3. Envío al Backend
-    // IMPORTANTE: Hemos borrado toda la manipulación del DOM (crear <li>, inyectar HTML, etc.).
+    // He borrado toda la manipulación del DOM (crear <li>, inyectar HTML, etc.).
     // Al NO ejecutar event.preventDefault() en este punto de éxito, el navegador continuará 
     // con su comportamiento nativo: empaquetar los inputs y enviarlos por el método POST 
     // hacia la URL definida en el action del <form> (tu archivo noticia.php).

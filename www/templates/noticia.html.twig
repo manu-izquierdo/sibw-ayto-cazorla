@@ -8,10 +8,13 @@
     {{ parent() }}  {# Para dejar el css que tenía por defecto #}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     
+    {# Convierte el array de PHP $listaLugares en un formato que JavaScript entiende (JSON). El filtro |raw evita que Twig "escape" las comillas, permitiendo que tu archivo script.js use la variable localidades directamente para resaltar palabras mientras el usuario escribe #}
+
     <script>
         const localidades = {{ lugares_js|json_encode|raw }};
     </script>
 
+    {# Descarga el script en segundo plano mientras sigue dibujando el HTML. Solo lo ejecuta una vez que todo el HTML ha terminado de cargarse. #}
     <script src="js/script.js" defer></script>
     
 {% endblock %}
@@ -33,7 +36,7 @@
 
             <section class="cuerpo-noticia">
                 <div class="texto-noticia">
-                    {# raw se usa para que el navegador entienda que es HTML real y no simple texto #}
+                    {# Se usa porque las descripciones de las noticias usan etiquetas HTML. Sin el filtro |raw, Twig mostraría el código literal en la pantalla #}
                     <p> {{ noticia.descripcion|raw }} </p>
                 </div>
                 <div class="imagenes-noticia">
@@ -54,8 +57,9 @@
     <aside class="formulario">
         <button id="cancel">&times;</button>
         <button id="boton-bloque-formulario"> <i class="fa-solid fa-plus"></i> </button>
-        
-        <form class="bloque-formulario" action="noticia.php?id={{ noticia.id }}" method="POST">
+
+        {# Campo invisible, cuando el usuario envía un comentario, este campo le dice al controlador PHP exactamente a qué noticia pertenece el mensaje #}
+        <form class="bloque-formulario" action="/noticia/{{ noticia.id }}" method="POST">
             <input type="hidden" name="noticia_id" value="{{ noticia.id }}">
 
             <label for="autor-comentario">Nombre:</label>
@@ -77,7 +81,7 @@
             {% for comentario in comentarios %}
                 <li> 
                     <div class="c-nombre"> {{ comentario.nombre }} </div> 
-                    <div class="c-hora"> {{ comentario.fecha|date("H:i | d/m/Y") }} </div>
+                    <div class="c-hora"> {{ comentario.fecha|date("H:i | d/m/Y") }} </div> {# El filtro que transforma la fecha en algo humano y fácil de leer #}
                     <div class="c-comentario"> {{ comentario.texto }} </div>
                 </li>
             {% else %}

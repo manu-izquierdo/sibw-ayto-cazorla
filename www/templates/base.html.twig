@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {# ESTA LÍNEA ES MAGIA: Obliga al navegador a buscar el CSS y las imágenes siempre desde la raíz #}
+    {# Obliga al navegador a buscar el CSS y las imágenes siempre desde la raíz #}
     <base href="/">
 
     {% block tituloPagina %} <title>Ayuntamiento de Cazorla</title> {% endblock %}
@@ -15,7 +15,7 @@
 
 <body>
     <nav class="encabezado">
-        <!-- Envuelvo dentro de un enlace la imagen para que sea clicable, esta llevará a la pagina de inicio-->
+        {# Envuelvo dentro de un enlace la imagen para que sea clicable, esta llevará a la pagina de inicio #}
         <a href="/">
             <img src="img/logo.png" alt="Logo Ayuntamiento de Cazorla" id="logo" title="Inicio">
         </a>
