@@ -1,3 +1,14 @@
+DROP USER IF EXISTS 'manu_sibw'@'%';
+-- 1. Crear el usuario (si no existe) con permisos de acceso remoto
+-- Usamos 'mysql_native_password' para evitar problemas de compatibilidad con PHP
+CREATE USER IF NOT EXISTS 'manu_sibw'@'%' IDENTIFIED WITH mysql_native_password BY 'practica3';
+
+-- 2. Darle todos los permisos sobre la base de datos específica
+GRANT ALL PRIVILEGES ON sibw.* TO 'manu_sibw'@'%';
+
+-- 3. Aplicar los cambios
+FLUSH PRIVILEGES;
+
 USE sibw;
 
 -- 1. Desactivar comprobación de llaves foráneas para poder limpiar en cascada
