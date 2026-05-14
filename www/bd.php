@@ -1,5 +1,10 @@
 <?php
-    date_default_timezone_set('Europe/Madrid'); // Zona horaria en el motor de PHP
+    // Iniciamos la sesión antes de cualquier salida al navegador
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    date_default_timezone_set('Europe/Madrid');
 
     $host = "lamp-mysql8";
     $db   = "sibw";

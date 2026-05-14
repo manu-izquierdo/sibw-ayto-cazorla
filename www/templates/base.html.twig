@@ -20,39 +20,61 @@
             <img src="img/logo.png" alt="Logo Ayuntamiento de Cazorla" id="logo" title="Inicio">
         </a>
 
-        <h1> Ayuntamiento de cazorla</h1>
-        
+        <h1>Ayuntamiento de Cazorla</h1>
+
         <ul class="enlaces-encabezado">
-            <li> <a href="#">Iniciar sesión</a> </li>
-            <li> <a href="#">Contacto</a> </li>
-            <li> <a href="#">FAQ</a> </li>
+            {% if sesion_id %}
+                {# Usuario logueado: mostramos su nombre y el botón de cerrar sesión #}
+                <li><span class="sesion-nombre">👤 {{ sesion_nombre }}</span></li>
+                <li><a href="/logout">Cerrar sesión</a></li>
+            {% else %}
+                {# Usuario anónimo: mostramos acceso al login y registro #}
+                <li><a href="/login">Iniciar sesión</a></li>
+                <li><a href="/registro">Registrarse</a></li>
+            {% endif %}
+            <li><a href="#">Contacto</a></li>
+            <li><a href="#">FAQ</a></li>
         </ul>
     </nav>
 
     <div class="lateral-main">
         <aside class="menu-lateral">
             <ul>
-                <li> <a href="#"> Subir Incidencia </a> </li>
-                <li> <a href="#"> Eliminar Incidencia </a> </li>
-                <li> <a href="#"> Estadísticas </a> </li>
+                {% if sesion_id %}
+                    {# Opciones disponibles para cualquier usuario logueado #}
+                    <li><a href="#">Mi perfil</a></li>
+                {% endif %}
+
+                {% if sesion_rol in ['moderador', 'superusuario'] %}
+                    {# Opciones de moderación #}
+                    <li><a href="#">Gestión comentarios</a></li>
+                {% endif %}
+
+                {% if sesion_rol in ['gestor', 'superusuario'] %}
+                    {# Opciones de gestión del sitio #}
+                    <li><a href="#">Gestión noticias</a></li>
+                {% endif %}
+
+                {% if sesion_rol == 'superusuario' %}
+                    {# Opciones exclusivas del superusuario #}
+                    <li><a href="#">Gestión usuarios</a></li>
+                {% endif %}
             </ul>
         </aside>
 
-    {% block cuerpo %}<p> No se ha podido renderizar </p>{% endblock %}
-    
+        {% block cuerpo %}<p>No se ha podido renderizar</p>{% endblock %}
+
     </div>
-    
+
     <footer>
         <ul>
-            <li> <a href="#">Identificación</a> </li>
-            <li> <a href="#">Web Ayuntamiento</a> </li>
+            <li><a href="#">Identificación</a></li>
+            <li><a href="#">Web Ayuntamiento</a></li>
             <li class="footer-derecho">
                 <a href="#">Aviso Legal</a>
-                <section id="copy">
-                    &copy; Copyright
-                </section>
+                <section id="copy">&copy; Copyright</section>
             </li>
-        </ul> 
+        </ul>
     </footer>
 </body>
 </html>

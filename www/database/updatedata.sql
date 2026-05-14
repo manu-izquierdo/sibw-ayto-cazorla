@@ -19,18 +19,24 @@ DELETE FROM comentarios;
 DELETE FROM imagenes;
 DELETE FROM noticias;
 DELETE FROM lugares;
+DELETE FROM noticia_hashtag;
+DELETE FROM hashtags;
+DELETE FROM usuarios;
 
 -- 3. Reiniciar los contadores de Auto Incremento
 ALTER TABLE comentarios AUTO_INCREMENT = 1;
 ALTER TABLE imagenes AUTO_INCREMENT = 1;
 ALTER TABLE noticias AUTO_INCREMENT = 1;
 ALTER TABLE lugares AUTO_INCREMENT = 1;
+ALTER TABLE noticia_hashtag AUTO_INCREMENT = 1;
+ALTER TABLE hashtags AUTO_INCREMENT = 1;
+ALTER TABLE usuarios AUTO_INCREMENT = 1;
 
 -- 4. Reactivar comprobaciones
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ==============================================================================
--- POBLADO DE DATOS (Basado en volcado real)
+-- POBLADO DE DATOS
 -- ==============================================================================
 
 -- LUGARES
@@ -66,7 +72,40 @@ INSERT INTO imagenes VALUES
 (12,7,'img/Noticias/n7_1.png'),
 (13,8,'img/Noticias/n8_1.png');
 
--- COMENTARIOS (Datos de prueba)
-INSERT INTO comentarios (noticia_id, nombre, email, texto, fecha) VALUES 
-(1, 'Manu Izquierdo', 'local@cazorla.es', 'Espero que abran la carretera pronto, gracias por el aviso.', '2026-04-20 08:15:00'),
-(2, 'Turista', 'visita@correo.com', 'Excelente iniciativa. Este año iremos a LA IRUELA y pasaremos por la ruta.', '2026-04-23 09:00:00');
+-- COMENTARIOS (con la nueva columna 'editado')
+INSERT INTO comentarios (noticia_id, nombre, email, texto, fecha, editado) VALUES 
+(1, 'Manu Izquierdo', 'local@cazorla.es', 'Espero que abran la carretera pronto, gracias por el aviso.', '2026-04-20 08:15:00', 0),
+(2, 'Turista', 'visita@correo.com', 'Excelente iniciativa. Este año iremos a LA IRUELA y pasaremos por la ruta.', '2026-04-23 09:00:00', 0);
+
+-- ==============================================================================
+-- USUARIOS DE PRUEBA (contraseñas hasheadas con password_hash en PHP)
+-- Contraseña real de todos los usuarios de prueba: "1234"
+-- Hash generado con: password_hash("1234", PASSWORD_DEFAULT)
+-- ==============================================================================
+INSERT INTO usuarios (nombre, email, password, rol) VALUES
+('Ana Registrada',    'registrado@cazorla.es',   '$2y$10$wFzaKhtgZDIAFK7MwVE2XO4/6yefjJCswWxJmNRcIZqgHdf3egqxm', 'registrado'),
+('Pedro Moderador',   'moderador@cazorla.es',    '$2y$10$wFzaKhtgZDIAFK7MwVE2XO4/6yefjJCswWxJmNRcIZqgHdf3egqxm', 'moderador'),
+('Laura Gestora',     'gestor@cazorla.es',       '$2y$10$wFzaKhtgZDIAFK7MwVE2XO4/6yefjJCswWxJmNRcIZqgHdf3egqxm', 'gestor'),
+('Admin Super',       'admin@cazorla.es',        '$2y$10$wFzaKhtgZDIAFK7MwVE2XO4/6yefjJCswWxJmNRcIZqgHdf3egqxm', 'superusuario');
+
+-- HASHTAGS de ejemplo
+INSERT INTO hashtags (nombre) VALUES
+('obras'),
+('turismo'),
+('cultura'),
+('medioambiente'),
+('comercio'),
+('deportes'),
+('infraestructuras');
+
+-- RELACIÓN noticias ↔ hashtags
+INSERT INTO noticia_hashtag (noticia_id, hashtag_id) VALUES
+(1, 1),  -- corte tráfico → obras
+(2, 2),  -- ruta tapa → turismo
+(3, 1),  -- polideportivo → obras
+(3, 6),  -- polideportivo → deportes
+(4, 7),  -- agua → infraestructuras
+(5, 3),  -- biblioteca → cultura
+(6, 1),  -- asfaltado → obras
+(7, 4),  -- reciclaje → medioambiente
+(8, 5);  -- digitalización → comercio

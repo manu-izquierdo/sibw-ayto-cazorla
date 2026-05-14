@@ -7,6 +7,11 @@
     $loader = new \Twig\Loader\FilesystemLoader('templates');
     $twig = new \Twig\Environment($loader);
 
+    // Añadimos los datos de sesión como variables globales de Twig para que todas las plantillas puedan acceder a ellos
+    $twig->addGlobal('sesion_nombre', $_SESSION['usuario_nombre'] ?? null);
+    $twig->addGlobal('sesion_rol',    $_SESSION['usuario_rol']    ?? null);
+    $twig->addGlobal('sesion_id',     $_SESSION['usuario_id']     ?? null);
+
     // Capta la URL limpia
     $ruta_solicitada = isset($_GET['ruta']) ? $_GET['ruta'] : '';
 
@@ -20,7 +25,7 @@
         case 'portada':
             require 'controlador_portada.php';
             break;
-            
+
         case 'noticia':
             $id = $parametro; // Pasamos el parámetro extraído a la variable $id que usará el controlador
             require 'controlador_noticia.php';
@@ -30,9 +35,20 @@
             $id = $parametro;
             require 'controlador_imprimir.php';
             break;
-            
+
+        case 'login':
+            require 'controlador_login.php';
+            break;
+
+        case 'registro':
+            require 'controlador_registro.php';
+            break;
+
+        case 'logout':
+            require 'controlador_logout.php';
+            break;
+
         default:
-            // Si el usuario inventa una URL (ej. localhost/inventado) devuelve un error 404 y detiene la ejecución.
             http_response_code(404);
             die("Error 404: La ruta solicitada no existe en la aplicación.");
     }
