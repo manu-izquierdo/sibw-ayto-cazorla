@@ -28,6 +28,7 @@
             
             if ($stmt) {
                 $stmt->bind_param("isss", $noticia_id_post, $nombre, $email, $texto); // "isss" es una cadena que le dice a PHP qué tipo de datos vas a meter en los huecos (?) de la consulta
+                $stmt->execute();
                 $stmt->close();
 
                 // si el usuario refresca el navegador, no se envíe el comentario dos veces.
@@ -64,11 +65,20 @@
     foreach ($lugaresBD as $lugar) {
         $listaLugares[] = $lugar['nombre'];
     }
+
+    // Obtener hashtags de la noticia
+    $resHashtags  = $mysqli->query(
+        "SELECT h.nombre FROM hashtags h
+         JOIN noticia_hashtag nh ON h.id = nh.hashtag_id
+         WHERE nh.noticia_id = $id"
+    );
+    $hashtags = array_column($resHashtags->fetch_all(MYSQLI_ASSOC), 'nombre');
     
     echo $twig->render('noticia.html.twig', [
         'noticia' => $noticia,
         'imagenes' => $imagenes,
         'comentarios' => $comentarios,
-        'lugares_js' => $listaLugares
+        'lugares_js' => $listaLugares,
+        'hashtags'   => $hashtags
     ]);
 ?>

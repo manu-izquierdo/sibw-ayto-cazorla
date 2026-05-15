@@ -26,6 +26,14 @@
                 </div>
             </header>
 
+            {% if hashtags is not empty %}
+                <div class="noticia-hashtags">
+                    {% for tag in hashtags %}
+                        <span class="hashtag-etiqueta">#{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             {# Barra de acciones para gestor/superusuario #}
             {% if sesion_rol in ['gestor', 'superusuario'] %}
                 <div class="barra-gestion-noticia">

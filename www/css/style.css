@@ -998,3 +998,26 @@ y ocupar cualquier espacio vacío que encuentre en el contenedor padre.*/
     padding: 0.2rem 0.4rem;
     cursor: not-allowed;
 }
+
+/*==========================*/
+/*=== Hashtags en noticia ===*/
+/*==========================*/
+
+.noticia-hashtags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.hashtag-etiqueta {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    background-color: rgba(10, 102, 56, 0.1);
+    color: rgba(10, 102, 56, 0.9);
+    border: 1px solid rgba(10, 102, 56, 0.3);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}

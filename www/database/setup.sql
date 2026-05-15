@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS noticias (
     fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
     tipo VARCHAR(100),
     concejalia VARCHAR(100),
-    personas TEXT,
     lugar_id INT,
     descripcion TEXT,
     FOREIGN KEY (lugar_id) REFERENCES lugares(id)
