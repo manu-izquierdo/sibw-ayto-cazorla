@@ -59,7 +59,11 @@
         case 'noticias':
             require 'controlador_noticias.php';
             break;
-
+ 
+        case 'hashtags':
+            require 'controlador_hashtags.php';
+            break;
+ 
         case 'usuarios':
             require 'controlador_usuarios.php';
             break;

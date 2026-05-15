@@ -1,0 +1,87 @@
+{% extends "base.html.twig" %}
+
+{% block tituloPagina %} <title>Gestión de Hashtags – Ayto Cazorla</title> {% endblock %}
+
+{% block formatoCss %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+{% endblock %}
+
+{% block cuerpo %}
+
+<main class="main-gestion">
+
+    <div class="gestion-cabecera">
+        <h2>Gestión de hashtags</h2>
+        <a href="/noticias" class="btn-limpiar">
+            <i class="fa-solid fa-arrow-left"></i> Volver a noticias
+        </a>
+    </div>
+
+    {% if exito %}
+        <p class="auth-exito">{{ exito }}</p>
+    {% endif %}
+
+    {% if hashtags is empty %}
+        <p class="gestion-vacio">No hay hashtags creados todavía.</p>
+    {% else %}
+        <table class="tabla-gestion">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Hashtag</th>
+                    <th>Noticias asociadas</th>
+                    <th>Editar nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tag in hashtags %}
+                <tr>
+                    <td>{{ tag.id }}</td>
+                    <td><span class="hashtag-etiqueta">#{{ tag.nombre }}</span></td>
+                    <td>
+                        {% if tag.total_noticias > 0 %}
+                            <a href="/noticias?buscar_hashtag={{ tag.nombre }}" class="enlace-noticia">
+                                {{ tag.total_noticias }} noticia{{ tag.total_noticias != 1 ? 's' : '' }}
+                            </a>
+                        {% else %}
+                            <span style="color:#aaa; font-size:0.85rem;">Sin noticias</span>
+                        {% endif %}
+                    </td>
+
+                    {# Formulario de edición inline #}
+                    <td>
+                        <form action="/hashtags" method="POST" class="form-editar-hashtag">
+                            <input type="hidden" name="accion"     value="editar">
+                            <input type="hidden" name="id_hashtag" value="{{ tag.id }}">
+                            <div class="form-cambiar-rol">
+                                <input type="text" name="nombre" class="input-estilo input-hashtag"
+                                       value="{{ tag.nombre }}" required>
+                                <button type="submit" class="btn-icono btn-editar-toggle" title="Guardar">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </td>
+
+                    {# Borrar #}
+                    <td class="td-acciones">
+                        <form action="/hashtags" method="POST" style="display:inline"
+                              onsubmit="return confirm('¿Borrar #{{ tag.nombre }}? Se desvinculará de todas sus noticias.');">
+                            <input type="hidden" name="accion"     value="borrar">
+                            <input type="hidden" name="id_hashtag" value="{{ tag.id }}">
+                            <button type="submit" class="btn-icono btn-borrar" title="Borrar hashtag">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+</main>
+
+{% endblock %}

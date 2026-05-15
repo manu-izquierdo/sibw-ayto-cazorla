@@ -13,12 +13,17 @@
 
     <div class="gestion-cabecera">
         <h2>Gestión de noticias</h2>
-        <a href="/noticias?accion=nueva" class="btn-nueva-noticia">
-            <i class="fa-solid fa-plus"></i> Nueva noticia
-        </a>
+        <div class="gestion-cabecera-botones">
+            <a href="/hashtags" class="btn-limpiar">
+                <i class="fa-solid fa-hashtag"></i> Gestionar hashtags
+            </a>
+            <a href="/noticias?accion=nueva" class="btn-nueva-noticia">
+                <i class="fa-solid fa-plus"></i> Nueva noticia
+            </a>
+        </div>
     </div>
 
-    {# Buscador doble: por título y por descripción #}
+    {# Buscador triple: título, descripción y hashtag #}
     <form action="/noticias" method="GET" class="form-busqueda form-busqueda-noticias">
         <input type="text" name="buscar_titulo" class="input-estilo input-busqueda"
                placeholder="Buscar por título..."
@@ -26,10 +31,19 @@
         <input type="text" name="buscar_desc" class="input-estilo input-busqueda"
                placeholder="Buscar por descripción..."
                value="{{ busqueda_desc }}">
+        <select name="buscar_hashtag" class="input-estilo select-hashtag-buscar">
+            <option value="">— Todos los hashtags —</option>
+            {% for tag in todos_hashtags %}
+                <option value="{{ tag.nombre }}"
+                    {{ busqueda_hashtag == tag.nombre ? 'selected' : '' }}>
+                    #{{ tag.nombre }}
+                </option>
+            {% endfor %}
+        </select>
         <button type="submit" class="btn-buscar">
             <i class="fa-solid fa-magnifying-glass"></i> Buscar
         </button>
-        {% if busqueda_titulo or busqueda_desc %}
+        {% if busqueda_titulo or busqueda_desc or busqueda_hashtag %}
             <a href="/noticias" class="btn-limpiar">Limpiar</a>
         {% endif %}
     </form>

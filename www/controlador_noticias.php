@@ -237,13 +237,20 @@
     }
 
     // ── LISTADO DE NOTICIAS (con búsqueda) ───────────────────────────────────
-    $busqueda_titulo = trim($_GET['buscar_titulo'] ?? '');
-    $busqueda_desc   = trim($_GET['buscar_desc']   ?? '');
+    $busqueda_titulo   = trim($_GET['buscar_titulo']  ?? '');
+    $busqueda_desc     = trim($_GET['buscar_desc']    ?? '');
+    $busqueda_hashtag  = trim($_GET['buscar_hashtag'] ?? '');
 
     $sql = "SELECT n.id, n.titulo, n.fecha, n.tipo, n.concejalia,
                    MIN(i.ruta) as ruta
             FROM noticias n
             LEFT JOIN imagenes i ON n.id = i.noticia_id";
+
+    // Si buscamos por hashtag necesitamos el JOIN con las tablas de hashtags
+    if ($busqueda_hashtag !== '') {
+        $sql .= " JOIN noticia_hashtag nh ON n.id = nh.noticia_id
+                  JOIN hashtags h ON nh.hashtag_id = h.id";
+    }
 
     $condiciones = [];
     $params      = [];
@@ -257,6 +264,11 @@
     if ($busqueda_desc !== '') {
         $condiciones[] = "n.descripcion LIKE ?";
         $params[]      = '%' . $busqueda_desc . '%';
+        $tipos        .= 's';
+    }
+    if ($busqueda_hashtag !== '') {
+        $condiciones[] = "h.nombre = ?";
+        $params[]      = $busqueda_hashtag;
         $tipos        .= 's';
     }
 
@@ -276,9 +288,14 @@
         $noticias = $mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);
     }
 
+    // Cargar todos los hashtags para el selector del buscador
+    $todos_hashtags = $mysqli->query("SELECT nombre FROM hashtags ORDER BY nombre")->fetch_all(MYSQLI_ASSOC);
+
     echo $twig->render('gestion_noticias.html.twig', [
-        'noticias'         => $noticias,
-        'busqueda_titulo'  => $busqueda_titulo,
-        'busqueda_desc'    => $busqueda_desc
+        'noticias'          => $noticias,
+        'busqueda_titulo'   => $busqueda_titulo,
+        'busqueda_desc'     => $busqueda_desc,
+        'busqueda_hashtag'  => $busqueda_hashtag,
+        'todos_hashtags'    => $todos_hashtags
     ]);
 ?>

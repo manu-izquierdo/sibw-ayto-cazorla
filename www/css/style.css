@@ -20,6 +20,9 @@ body {
     background-position: center center;
     background-attachment: fixed;
     background-color: rgb(240, 244, 248);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Todos los enlaces tendrán este formato */
@@ -74,6 +77,7 @@ ul{
     flex-direction: row;
     flex-wrap: nowrap; /* Si falta espacio, los elementos se seguiran manteniendo en la misma linea */
     gap: 1rem;
+    flex: 1;
 }
 
 /* Aside */
@@ -123,7 +127,6 @@ ul{
     background-color: rgba(255, 255, 255, 0.9);
     padding: 2rem;
     flex-grow: 1;       /* Dado que el main está en un flexbox junto el aside le dice al <main> que use todo el espacio sobrante para él*/
-    margin-right: 1rem;
     text-align: center;
     gap: 1rem;
 }
@@ -1020,4 +1023,29 @@ y ocupar cualquier espacio vacío que encuentre en el contenedor padre.*/
     font-size: 0.85rem;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
+}
+
+/*==========================*/
+/*=== Gestión de hashtags ===*/
+/*==========================*/
+
+.gestion-cabecera-botones {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+}
+
+.input-hashtag {
+    max-width: 160px;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.9rem;
+}
+
+.select-hashtag-buscar {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
 }

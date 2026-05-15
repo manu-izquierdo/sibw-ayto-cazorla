@@ -38,12 +38,11 @@
     </nav>
 
     <div class="lateral-main">
+    {% if sesion_id %}
         <aside class="menu-lateral">
             <ul>
-                {% if sesion_id %}
-                    {# Opciones disponibles para cualquier usuario logueado #}
-                    <li><a href="/perfil">Mi perfil</a></li>
-                {% endif %}
+                {# Opciones disponibles para cualquier usuario logueado #}
+                <li><a href="/perfil">Mi perfil</a></li>
 
                 {% if sesion_rol in ['moderador', 'superusuario'] %}
                     {# Opciones de moderación #}
@@ -58,11 +57,13 @@
                 {% if sesion_rol == 'superusuario' %}
                     {# Opciones exclusivas del superusuario #}
                     <li><a href="/usuarios">Gestión usuarios</a></li>
+                    <li><a href="/hashtags">Gestión hashtag</a></li>
                 {% endif %}
             </ul>
         </aside>
+    {% endif %}
 
-        {% block cuerpo %}<p>No se ha podido renderizar</p>{% endblock %}
+    {% block cuerpo %}<p>No se ha podido renderizar</p>{% endblock %}
 
     </div>
 
