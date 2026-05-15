@@ -42,22 +42,22 @@
             <ul>
                 {% if sesion_id %}
                     {# Opciones disponibles para cualquier usuario logueado #}
-                    <li><a href="#">Mi perfil</a></li>
+                    <li><a href="/perfil">Mi perfil</a></li>
                 {% endif %}
 
                 {% if sesion_rol in ['moderador', 'superusuario'] %}
                     {# Opciones de moderación #}
-                    <li><a href="#">Gestión comentarios</a></li>
+                    <li><a href="/comentarios">Gestión comentarios</a></li>
                 {% endif %}
 
                 {% if sesion_rol in ['gestor', 'superusuario'] %}
                     {# Opciones de gestión del sitio #}
-                    <li><a href="#">Gestión noticias</a></li>
+                    <li><a href="/noticias">Gestión noticias</a></li>
                 {% endif %}
 
                 {% if sesion_rol == 'superusuario' %}
                     {# Opciones exclusivas del superusuario #}
-                    <li><a href="#">Gestión usuarios</a></li>
+                    <li><a href="/usuarios">Gestión usuarios</a></li>
                 {% endif %}
             </ul>
         </aside>

@@ -1,0 +1,74 @@
+{% extends "base.html.twig" %}
+
+{% block tituloPagina %} <title>Mi Perfil – Ayto Cazorla</title> {% endblock %}
+
+{% block formatoCss %}
+    {{ parent() }}
+    <link rel="stylesheet" href="css/auth.css">
+{% endblock %}
+
+{% block cuerpo %}
+
+<main class="main-formulario-auth">
+    <div class="contenedor-auth contenedor-perfil">
+
+        <h2>Mi perfil</h2>
+
+        {# Etiqueta visual con el rol del usuario #}
+        <p class="perfil-rol">
+            Rol:
+            {% if usuario.rol == 'superusuario' %}
+                <span class="badge badge-super">Superusuario</span>
+            {% elseif usuario.rol == 'gestor' %}
+                <span class="badge badge-gestor">Gestor</span>
+            {% elseif usuario.rol == 'moderador' %}
+                <span class="badge badge-moderador">Moderador</span>
+            {% else %}
+                <span class="badge badge-registrado">Registrado</span>
+            {% endif %}
+        </p>
+        <p class="perfil-fecha">Miembro desde: {{ usuario.fecha_registro|date("d/m/Y") }}</p>
+
+        {# Mensajes de éxito o error #}
+        {% if exito %}
+            <p class="auth-exito">{{ exito }}</p>
+        {% endif %}
+        {% if error %}
+            <p class="auth-error">{{ error }}</p>
+        {% endif %}
+
+        {# ── Formulario de edición ── #}
+        <form action="/perfil" method="POST" class="form-auth">
+            <input type="hidden" name="accion" value="editar">
+
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" class="input-estilo"
+                   value="{{ usuario.nombre }}" required>
+
+            <label for="email">Correo electrónico:</label>
+            <input type="email" id="email" name="email" class="input-estilo"
+                   value="{{ usuario.email }}" required>
+
+            <label for="password">Nueva contraseña: <span class="label-opcional">(dejar vacío para no cambiarla)</span></label>
+            <input type="password" id="password" name="password" class="input-estilo">
+
+            <label for="password2">Repetir nueva contraseña:</label>
+            <input type="password" id="password2" name="password2" class="input-estilo">
+
+            <button type="submit" class="btn-auth">Guardar cambios</button>
+        </form>
+
+        {# ── Zona peligrosa: eliminar cuenta ── #}
+        <div class="zona-peligrosa">
+            <p>¿Quieres eliminar tu cuenta? Esta acción no se puede deshacer.</p>
+            <form action="/perfil" method="POST"
+                  onsubmit="return confirm('¿Seguro que quieres eliminar tu cuenta? Esta acción es irreversible.');">
+                <input type="hidden" name="accion" value="eliminar">
+                <button type="submit" class="btn-eliminar">Eliminar mi cuenta</button>
+            </form>
+        </div>
+
+    </div>
+</main>
+
+{% endblock %}

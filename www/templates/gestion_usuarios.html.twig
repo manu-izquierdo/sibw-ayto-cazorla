@@ -1,0 +1,103 @@
+{% extends "base.html.twig" %}
+
+{% block tituloPagina %} <title>Gestión de Usuarios – Ayto Cazorla</title> {% endblock %}
+
+{% block formatoCss %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+{% endblock %}
+
+{% block cuerpo %}
+
+<main class="main-gestion">
+
+    <div class="gestion-cabecera">
+        <h2>Gestión de usuarios</h2>
+        <span class="badge badge-super">Superusuario</span>
+    </div>
+
+    {% if exito %}
+        <p class="auth-exito">{{ exito }}</p>
+    {% endif %}
+    {% if error %}
+        <p class="auth-error">{{ error }}</p>
+    {% endif %}
+
+    <table class="tabla-gestion">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol actual</th>
+                <th>Miembro desde</th>
+                <th>Cambiar rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios %}
+            <tr class="{{ u.id == mi_id ? 'fila-yo' : '' }}">
+                <td>{{ u.id }}</td>
+                <td>
+                    {{ u.nombre }}
+                    {% if u.id == mi_id %}
+                        <span class="badge-yo">Tú</span>
+                    {% endif %}
+                </td>
+                <td>{{ u.email }}</td>
+                <td>
+                    {% if u.rol == 'superusuario' %}
+                        <span class="badge badge-super">Superusuario</span>
+                    {% elseif u.rol == 'gestor' %}
+                        <span class="badge badge-gestor">Gestor</span>
+                    {% elseif u.rol == 'moderador' %}
+                        <span class="badge badge-moderador">Moderador</span>
+                    {% else %}
+                        <span class="badge badge-registrado">Registrado</span>
+                    {% endif %}
+                </td>
+                <td>{{ u.fecha_registro|date("d/m/Y") }}</td>
+
+                {# Selector de rol #}
+                <td>
+                    <form action="/usuarios" method="POST" class="form-cambiar-rol">
+                        <input type="hidden" name="accion"     value="cambiar_rol">
+                        <input type="hidden" name="id_usuario" value="{{ u.id }}">
+                        <select name="nuevo_rol" class="input-estilo select-rol">
+                            <option value="registrado"  {{ u.rol == 'registrado'  ? 'selected' : '' }}>Registrado</option>
+                            <option value="moderador"   {{ u.rol == 'moderador'   ? 'selected' : '' }}>Moderador</option>
+                            <option value="gestor"      {{ u.rol == 'gestor'      ? 'selected' : '' }}>Gestor</option>
+                            <option value="superusuario"{{ u.rol == 'superusuario'? 'selected' : '' }}>Superusuario</option>
+                        </select>
+                        <button type="submit" class="btn-icono btn-editar-toggle" title="Guardar rol">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                        </button>
+                    </form>
+                </td>
+
+                {# Botón eliminar (desactivado para uno mismo) #}
+                <td class="td-acciones">
+                    {% if u.id != mi_id %}
+                        <form action="/usuarios" method="POST" style="display:inline"
+                              onsubmit="return confirm('¿Eliminar al usuario {{ u.nombre }}?');">
+                            <input type="hidden" name="accion"     value="eliminar">
+                            <input type="hidden" name="id_usuario" value="{{ u.id }}">
+                            <button type="submit" class="btn-icono btn-borrar" title="Eliminar usuario">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    {% else %}
+                        <span class="btn-icono-disabled" title="No puedes eliminarte a ti mismo">
+                            <i class="fa-solid fa-trash"></i>
+                        </span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</main>
+
+{% endblock %}

@@ -48,6 +48,22 @@
             require 'controlador_logout.php';
             break;
 
+        case 'perfil':
+            require 'controlador_perfil.php';
+            break;
+
+        case 'comentarios':
+            require 'controlador_comentarios.php';
+            break;
+
+        case 'noticias':
+            require 'controlador_noticias.php';
+            break;
+
+        case 'usuarios':
+            require 'controlador_usuarios.php';
+            break;
+        
         default:
             http_response_code(404);
             die("Error 404: La ruta solicitada no existe en la aplicación.");

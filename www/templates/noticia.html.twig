@@ -2,23 +2,15 @@
 
 {% block tituloPagina %} <title>Noticia Ayto Cazorla</title> {% endblock %}
 
-
 {% block formatoCss %}
-
-    {{ parent() }}  {# Para dejar el css que tenía por defecto #}
+    {{ parent() }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    
-    {# Convierte el array de PHP $listaLugares en un formato que JavaScript entiende (JSON). El filtro |raw evita que Twig "escape" las comillas, permitiendo que tu archivo script.js use la variable localidades directamente para resaltar palabras mientras el usuario escribe #}
 
     <script>
         const localidades = {{ lugares_js|json_encode|raw }};
     </script>
-
-    {# Descarga el script en segundo plano mientras sigue dibujando el HTML. Solo lo ejecuta una vez que todo el HTML ha terminado de cargarse. #}
     <script src="js/script.js" defer></script>
-    
 {% endblock %}
-
 
 {% block cuerpo %}
 
@@ -28,15 +20,34 @@
                 <h1> {{ noticia.titulo }} </h1>
                 <div class="enlaces-redes">
                     <a href="#"> <img src="img/Social/TikTok.png" alt="Tiktok"> </a>
-                    <a href="https://www.instagram.com/aytocazorla/?hl=es" target="_blank"> <img src="img/Social/IG.png" alt="Instragram"> </a>
+                    <a href="https://www.instagram.com/aytocazorla/?hl=es" target="_blank"> <img src="img/Social/IG.png" alt="Instagram"> </a>
                     <a href="https://x.com/AytodeCazorla" target="_blank"> <img src="img/Social/X.png" alt="Twitter"> </a>
                     <a href="/imprimir/{{ noticia.id }}"> <img src="img/Social/Print.png" alt="Imprimir"> </a>
                 </div>
             </header>
 
+            {# Barra de acciones para gestor/superusuario #}
+            {% if sesion_rol in ['gestor', 'superusuario'] %}
+                <div class="barra-gestion-noticia">
+                    <a href="/noticias?accion=nueva" class="btn-gestion btn-gestion-nuevo">
+                        <i class="fa-solid fa-plus"></i> Nueva noticia
+                    </a>
+                    <a href="/noticias?accion=form-editar&id={{ noticia.id }}" class="btn-gestion btn-gestion-editar">
+                        <i class="fa-solid fa-pen"></i> Editar esta noticia
+                    </a>
+                    <form action="/noticias" method="POST" style="display:inline"
+                          onsubmit="return confirm('¿Borrar esta noticia? Se eliminarán también sus imágenes y comentarios.');">
+                        <input type="hidden" name="accion"     value="borrar">
+                        <input type="hidden" name="id_noticia" value="{{ noticia.id }}">
+                        <button type="submit" class="btn-gestion btn-gestion-borrar">
+                            <i class="fa-solid fa-trash"></i> Borrar esta noticia
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+
             <section class="cuerpo-noticia">
                 <div class="texto-noticia">
-                    {# Se usa porque las descripciones de las noticias usan etiquetas HTML. Sin el filtro |raw, Twig mostraría el código literal en la pantalla #}
                     <p> {{ noticia.descripcion|raw }} </p>
                 </div>
                 <div class="imagenes-noticia">
@@ -51,43 +62,117 @@
     <div id="zona-derecha"></div>
 
     <div id="pestana-abrir">
-            <i class="fa-solid fa-comments"></i>
+        <i class="fa-solid fa-comments"></i>
     </div>
 
     <aside class="formulario">
         <button id="cancel">&times;</button>
         <button id="boton-bloque-formulario"> <i class="fa-solid fa-plus"></i> </button>
 
-        {# Campo invisible, cuando el usuario envía un comentario, este campo le dice al controlador PHP exactamente a qué noticia pertenece el mensaje #}
-        <form class="bloque-formulario" action="/noticia/{{ noticia.id }}" method="POST">
-            <input type="hidden" name="noticia_id" value="{{ noticia.id }}">
+        {# Formulario de nuevo comentario: solo para usuarios logueados #}
+        {% if sesion_id %}
+            <form class="bloque-formulario" action="/noticia/{{ noticia.id }}" method="POST">
+                <input type="hidden" name="noticia_id" value="{{ noticia.id }}">
 
-            <label for="autor-comentario">Nombre:</label>
-            <input type="text" name="nombre" class="input-estilo" id="autor-comentario" required>
-            
-            <label for="email-comentario">Correo:</label>
-            <input type="email" name="email" class="input-estilo" id="email-comentario" required>
+                <label for="autor-comentario">Nombre:</label>
+                <input type="text" name="nombre" class="input-estilo" id="autor-comentario" required>
 
-            <label for="texto-comentario">Texto:</label>
-            <textarea name="texto" class="input-estilo" id="texto-comentario" rows="6" required></textarea>
+                <label for="email-comentario">Correo:</label>
+                <input type="email" name="email" class="input-estilo" id="email-comentario" required>
 
-            <div class="botones-comentario">
-                <button type="button" id="cancelar-comentario">Cancelar</button>
-                <button type="submit">Enviar</button>
-            </div>
-        </form>
+                <label for="texto-comentario">Texto:</label>
+                <textarea name="texto" class="input-estilo" id="texto-comentario" rows="6" required></textarea>
+
+                <div class="botones-comentario">
+                    <button type="button" id="cancelar-comentario">Cancelar</button>
+                    <button type="submit">Enviar</button>
+                </div>
+            </form>
+        {% else %}
+            <p class="aviso-login">
+                <a href="/login">Inicia sesión</a> para dejar un comentario.
+            </p>
+        {% endif %}
 
         <ul class="comments">
             {% for comentario in comentarios %}
-                <li> 
-                    <div class="c-nombre"> {{ comentario.nombre }} </div> 
-                    <div class="c-hora"> {{ comentario.fecha|date("H:i | d/m/Y") }} </div> {# El filtro que transforma la fecha en algo humano y fácil de leer #}
-                    <div class="c-comentario"> {{ comentario.texto }} </div>
+                <li>
+                    <div class="c-cabecera">
+                        <div>
+                            <div class="c-nombre"> {{ comentario.nombre }} </div>
+                            <div class="c-hora"> {{ comentario.fecha|date("H:i | d/m/Y") }} </div>
+                        </div>
+
+                        {# Iconos de moderación: solo para moderador y superusuario #}
+                        {% if sesion_rol in ['moderador', 'superusuario'] %}
+                            <div class="c-acciones-mod">
+
+                                {# Botón editar: muestra/oculta formulario inline #}
+                                <button class="btn-icono btn-editar-toggle"
+                                        onclick="toggleEditarComentario({{ comentario.id }})"
+                                        title="Editar">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+
+                                {# Botón borrar #}
+                                <form action="/comentarios" method="POST" style="display:inline"
+                                      onsubmit="return confirm('¿Borrar este comentario?');">
+                                    <input type="hidden" name="accion"        value="borrar">
+                                    <input type="hidden" name="id_comentario" value="{{ comentario.id }}">
+                                    <input type="hidden" name="noticia_id"    value="{{ noticia.id }}">
+                                    <input type="hidden" name="origen"        value="noticia">
+                                    <button type="submit" class="btn-icono btn-borrar" title="Borrar">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# Texto del comentario (modo lectura) #}
+                    <div class="c-comentario" id="texto-{{ comentario.id }}">
+                        {{ comentario.texto }}
+                        {% if comentario.editado %}
+                            <span class="badge-editado">Mensaje editado por el moderador</span>
+                        {% endif %}
+                    </div>
+
+                    {# Formulario de edición inline (oculto por defecto) #}
+                    {% if sesion_rol in ['moderador', 'superusuario'] %}
+                        <form id="form-editar-{{ comentario.id }}"
+                              action="/comentarios" method="POST"
+                              class="form-editar-comentario" style="display:none;">
+                            <input type="hidden" name="accion"        value="editar">
+                            <input type="hidden" name="id_comentario" value="{{ comentario.id }}">
+                            <input type="hidden" name="noticia_id"    value="{{ noticia.id }}">
+                            <input type="hidden" name="origen"        value="noticia">
+                            <textarea name="texto" class="input-estilo" rows="3" required>{{ comentario.texto }}</textarea>
+                            <div class="acciones-editar">
+                                <button type="submit" class="btn-auth btn-guardar-edicion">
+                                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                                </button>
+                                <button type="button" class="btn-cancelar-edicion"
+                                        onclick="toggleEditarComentario({{ comentario.id }})">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    {% endif %}
                 </li>
             {% else %}
                 <li><div class="c-comentario">No hay comentarios aún.</div></li>
             {% endfor %}
         </ul>
     </aside>
+
+    <script>
+        function toggleEditarComentario(id) {
+            const form  = document.getElementById('form-editar-' + id);
+            const texto = document.getElementById('texto-' + id);
+            const oculto = form.style.display === 'none';
+            form.style.display  = oculto ? 'block' : 'none';
+            texto.style.display = oculto ? 'none'  : 'block';
+        }
+    </script>
 
 {% endblock %}

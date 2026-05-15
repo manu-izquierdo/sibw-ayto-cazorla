@@ -403,3 +403,598 @@ y ocupar cualquier espacio vacío que encuentre en el contenedor padre.*/
     transform: scale(1.1);   /* Se agranda un poquito al pasar el ratón */
     box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
+
+
+/*==========================*/
+/*=== Moderación comentarios */
+/*==========================*/
+
+/* Cabecera del comentario: nombre+hora a la izquierda, iconos a la derecha */
+.c-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.3rem;
+}
+
+.c-acciones-mod {
+    display: flex;
+    gap: 0.3rem;
+    flex-shrink: 0;
+}
+
+/* Botones icono pequeños (editar y borrar) */
+.btn-icono {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-editar-toggle { color: #2980b9; }
+.btn-editar-toggle:hover { background-color: #d6eaf8; }
+
+.btn-borrar { color: #e74c3c; }
+.btn-borrar:hover { background-color: #fdecea; }
+
+/* Badge "editado" dentro del comentario */
+.badge-editado {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-style: italic;
+    color: #7f8c8d;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+}
+
+/* Formulario de edición inline en la noticia */
+.form-editar-comentario {
+    margin-top: 0.5rem;
+}
+
+.form-editar-comentario .input-estilo {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid rgba(10, 102, 56, 0.5);
+    border-radius: 6px;
+    resize: vertical;
+}
+
+.acciones-editar {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+
+.btn-guardar-edicion {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    margin-top: 0;
+}
+
+.btn-cancelar-edicion {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #555;
+    transition: background-color 0.2s ease;
+}
+
+.btn-cancelar-edicion:hover {
+    background-color: #f0f0f0;
+}
+
+/* Aviso de login para comentar */
+.aviso-login {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #555;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 6px;
+    margin: 1rem 0;
+}
+
+.aviso-login a {
+    color: rgba(10, 102, 56, 0.9);
+    font-weight: 600;
+}
+
+/*==========================*/
+/*=== Página gestión comentarios */
+/*==========================*/
+
+.main-gestion {
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    margin-right: 1rem;
+}
+
+.gestion-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-bottom: 2px solid rgba(10, 102, 56, 0.3);
+    padding-bottom: 1rem;
+}
+
+.gestion-cabecera h2 {
+    color: rgba(10, 102, 56, 0.9);
+}
+
+.form-busqueda {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.input-busqueda {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: 'Open Sans', sans-serif;
+    min-width: 260px;
+}
+
+.btn-buscar {
+    padding: 0.4rem 1rem;
+    background-color: rgba(10, 102, 56, 0.9);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-buscar:hover { background-color: #3e7a4d; }
+
+.btn-limpiar {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    color: #555;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-limpiar:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.gestion-vacio {
+    text-align: center;
+    color: #7f8c8d;
+    padding: 3rem;
+    font-size: 1.1rem;
+}
+
+/* Tabla de gestión */
+.tabla-gestion {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.tabla-gestion th {
+    background-color: rgba(10, 102, 56, 0.1);
+    color: rgba(10, 102, 56, 0.9);
+    text-align: left;
+    padding: 0.7rem 0.8rem;
+    font-family: 'Montserrat', sans-serif;
+    border-bottom: 2px solid rgba(10, 102, 56, 0.3);
+}
+
+.tabla-gestion td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #e8e8e8;
+    vertical-align: top;
+    color: #2c3e50;
+}
+
+.tabla-gestion tr:hover td {
+    background-color: #f9f9f9;
+}
+
+.td-acciones {
+    white-space: nowrap;
+}
+
+.enlace-noticia {
+    color: rgba(10, 102, 56, 0.9);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.enlace-noticia:hover {
+    color: rgb(197, 160, 89);
+}
+
+/* Fila de edición inline en la tabla */
+.fila-editar td {
+    background-color: #f0f7f3;
+    padding: 0.8rem;
+}
+
+.form-editar-inline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.textarea-editar {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem;
+    border: 1px solid rgba(10, 102, 56, 0.4);
+    border-radius: 6px;
+    font-family: 'Open Sans', sans-serif;
+    resize: vertical;
+}
+
+
+/*==========================*/
+/*=== Gestión de noticias ===*/
+/*==========================*/
+
+/* Botón nueva noticia en la cabecera del listado */
+.btn-nueva-noticia {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1.2rem;
+    background-color: rgba(10, 102, 56, 0.9);
+    color: white;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-nueva-noticia:hover {
+    background-color: #3e7a4d;
+    color: white;
+}
+
+/* Miniatura en la tabla */
+.thumb-noticia {
+    width: 70px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.sin-imagen {
+    font-size: 0.8rem;
+    color: #aaa;
+    font-style: italic;
+}
+
+/* Buscador doble en gestión de noticias */
+.form-busqueda-noticias {
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* Barra de gestión dentro de la noticia */
+.barra-gestion-noticia {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    background-color: #f0f7f3;
+    border: 1px solid rgba(10, 102, 56, 0.3);
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-gestion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-gestion-nuevo {
+    background-color: rgba(10, 102, 56, 0.9);
+    color: white;
+}
+.btn-gestion-nuevo:hover { background-color: #3e7a4d; color: white; }
+
+.btn-gestion-editar {
+    background-color: #2980b9;
+    color: white;
+}
+.btn-gestion-editar:hover { background-color: #2471a3; color: white; }
+
+.btn-gestion-borrar {
+    background-color: #e74c3c;
+    color: white;
+}
+.btn-gestion-borrar:hover { background-color: #c0392b; color: white; }
+
+/*==========================*/
+/*=== Formulario noticia ===*/
+/*==========================*/
+
+.form-noticia {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-width: 900px;
+}
+
+.form-noticia-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.campo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.campo-form label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #2c3e50;
+}
+
+.campo-form .input-estilo {
+    padding: 0.5rem 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.95rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.campo-descripcion {
+    grid-column: 1 / -1;
+}
+
+.textarea-descripcion {
+    resize: vertical;
+    min-height: 200px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.campo-ayuda {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    margin-top: 0.2rem;
+}
+
+.label-requerido {
+    color: #e74c3c;
+}
+
+/* Hashtags */
+.hashtags-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fafafa;
+    min-height: 2.5rem;
+}
+
+.hashtag-opcion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.6rem;
+    background-color: #e8f5e9;
+    border: 1px solid rgba(10, 102, 56, 0.3);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: rgba(10, 102, 56, 0.9);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.hashtag-opcion:hover { background-color: #c8e6c9; }
+.hashtag-nuevo { background-color: #fff3e0; border-color: #ff9800; color: #e65100; }
+
+.nuevo-hashtag {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+    align-items: center;
+}
+
+.nuevo-hashtag .input-estilo {
+    max-width: 220px;
+}
+
+/* Imágenes actuales en edición */
+.imagenes-actuales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.img-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.img-item img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid #ddd;
+}
+
+.img-borrar {
+    font-size: 0.8rem;
+    color: #e74c3c;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* Botones del formulario */
+.form-noticia-botones {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding-top: 0.5rem;
+}
+
+.form-noticia-botones .btn-auth {
+    width: auto;
+    padding: 0.6rem 1.5rem;
+    margin-top: 0;
+}
+
+/*==========================*/
+/*=== Galería selección imágenes ===*/
+/*==========================*/
+
+.galeria-seleccion {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fafafa;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.galeria-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+    padding: 0.4rem;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.galeria-item:hover {
+    background-color: #e8f5e9;
+    border-color: rgba(10, 102, 56, 0.4);
+}
+
+/* Cuando el checkbox está marcado resaltamos la imagen */
+.galeria-item input[type="checkbox"] {
+    display: none;
+}
+
+.galeria-item input[type="checkbox"]:checked + img {
+    border: 3px solid rgba(10, 102, 56, 0.9);
+    border-radius: 4px;
+}
+
+.galeria-item input[type="checkbox"]:checked ~ .galeria-nombre {
+    color: rgba(10, 102, 56, 0.9);
+    font-weight: 700;
+}
+
+.galeria-item img {
+    width: 100px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 3px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.galeria-nombre {
+    font-size: 0.72rem;
+    color: #555;
+    max-width: 100px;
+    text-align: center;
+    word-break: break-all;
+}
+
+/*==========================*/
+/*=== Gestión de usuarios ===*/
+/*==========================*/
+
+/* Fila del usuario logueado */
+.fila-yo {
+    background-color: #f0f7f3;
+}
+
+/* Badge "Tú" junto al nombre */
+.badge-yo {
+    display: inline-block;
+    font-size: 0.7rem;
+    background-color: rgb(197, 160, 89);
+    color: white;
+    border-radius: 20px;
+    padding: 0.1rem 0.5rem;
+    margin-left: 0.4rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+/* Formulario inline de cambio de rol */
+.form-cambiar-rol {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.select-rol {
+    padding: 0.3rem 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+/* Botón eliminar desactivado */
+.btn-icono-disabled {
+    color: #ccc;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.4rem;
+    cursor: not-allowed;
+}

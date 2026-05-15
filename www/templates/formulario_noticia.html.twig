@@ -1,0 +1,169 @@
+{% extends "base.html.twig" %}
+
+{% block tituloPagina %}
+    <title>{{ modo == 'editar' ? 'Editar noticia' : 'Nueva noticia' }} – Ayto Cazorla</title>
+{% endblock %}
+
+{% block formatoCss %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+{% endblock %}
+
+{% block cuerpo %}
+
+<main class="main-gestion">
+    <div class="gestion-cabecera">
+        <h2>{{ modo == 'editar' ? 'Editar noticia' : 'Nueva noticia' }}</h2>
+        <a href="/noticias" class="btn-limpiar">
+            <i class="fa-solid fa-arrow-left"></i> Volver al listado
+        </a>
+    </div>
+
+    <form action="/noticias" method="POST" enctype="multipart/form-data" class="form-noticia">
+
+        <input type="hidden" name="accion"     value="{{ modo }}">
+        {% if modo == 'editar' %}
+            <input type="hidden" name="id_noticia" value="{{ noticia.id }}">
+        {% endif %}
+
+        {# ── Datos principales ── #}
+        <div class="form-noticia-grid">
+
+            <div class="campo-form">
+                <label for="titulo">Título <span class="label-requerido">*</span></label>
+                <input type="text" id="titulo" name="titulo" class="input-estilo"
+                       value="{{ noticia.titulo ?? '' }}" required>
+            </div>
+
+            <div class="campo-form">
+                <label for="tipo">Tipo</label>
+                <input type="text" id="tipo" name="tipo" class="input-estilo"
+                       value="{{ noticia.tipo ?? '' }}"
+                       placeholder="Ej: Obras, Cultura, Aviso...">
+            </div>
+
+            <div class="campo-form">
+                <label for="concejalia">Concejalía</label>
+                <input type="text" id="concejalia" name="concejalia" class="input-estilo"
+                       value="{{ noticia.concejalia ?? '' }}"
+                       placeholder="Ej: Urbanismo, Turismo...">
+            </div>
+
+            <div class="campo-form">
+                <label for="lugar_id">Lugar</label>
+                <select id="lugar_id" name="lugar_id" class="input-estilo">
+                    <option value="0">— Sin lugar —</option>
+                    {% for lugar in lugares %}
+                        <option value="{{ lugar.id }}"
+                            {{ noticia.lugar_id is defined and noticia.lugar_id == lugar.id ? 'selected' : '' }}>
+                            {{ lugar.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        </div>
+
+        {# ── Descripción ── #}
+        <div class="campo-form campo-descripcion">
+            <label for="descripcion">Descripción <span class="label-requerido">*</span></label>
+            <textarea id="descripcion" name="descripcion" class="input-estilo textarea-descripcion"
+                      rows="10" required>{{ noticia.descripcion ?? '' }}</textarea>
+            <p class="campo-ayuda">Puedes usar etiquetas HTML como &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;...</p>
+        </div>
+
+        {# ── Hashtags ── #}
+        <div class="campo-form">
+            <label>Hashtags</label>
+            <div class="hashtags-grid">
+                {% for tag in todos_hashtags %}
+                    <label class="hashtag-opcion">
+                        <input type="checkbox" name="hashtags[]" value="{{ tag.nombre }}"
+                               {{ tag.nombre in tags_noticia ? 'checked' : '' }}>
+                        #{{ tag.nombre }}
+                    </label>
+                {% endfor %}
+            </div>
+            {# Campo para añadir hashtags nuevos #}
+            <div class="nuevo-hashtag">
+                <input type="text" id="nuevo-tag-input" class="input-estilo"
+                       placeholder="Nuevo hashtag (pulsa Añadir)">
+                <button type="button" id="btn-add-tag" class="btn-buscar">
+                    <i class="fa-solid fa-plus"></i> Añadir
+                </button>
+            </div>
+            <div id="nuevos-tags-container"></div>
+        </div>
+
+        {# ── Imágenes actuales (solo en edición) ── #}
+        {% if modo == 'editar' and imagenes is not empty %}
+            <div class="campo-form">
+                <label>Imágenes actuales</label>
+                <div class="imagenes-actuales">
+                    {% for img in imagenes %}
+                        <div class="img-item">
+                            <img src="{{ img.ruta }}" alt="Imagen noticia">
+                            <label class="img-borrar">
+                                <input type="checkbox" name="imgs_borrar[]" value="{{ img.id }}">
+                                Eliminar
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {# ── Selección de imágenes de la carpeta ── #}
+        <div class="campo-form">
+            <label>Añadir imágenes</label>
+            {% if imgs_disponibles is empty %}
+                <p class="campo-ayuda">No hay imágenes disponibles en la carpeta img/Noticias/ o todas ya están asociadas.</p>
+            {% else %}
+                <p class="campo-ayuda">Selecciona las imágenes de la carpeta que quieras asociar a esta noticia.</p>
+                <div class="galeria-seleccion">
+                    {% for ruta in imgs_disponibles %}
+                        <label class="galeria-item">
+                            <input type="checkbox" name="imgs_sel[]" value="{{ ruta }}">
+                            <img src="{{ ruta }}" alt="{{ ruta }}">
+                            <span class="galeria-nombre">{{ ruta|split('/')|last }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-noticia-botones">
+            <a href="/noticias" class="btn-cancelar-edicion">Cancelar</a>
+            <button type="submit" class="btn-auth">
+                <i class="fa-solid fa-floppy-disk"></i>
+                {{ modo == 'editar' ? 'Guardar cambios' : 'Crear noticia' }}
+            </button>
+        </div>
+
+    </form>
+</main>
+
+<script>
+    // Añadir nuevos hashtags dinámicamente
+    document.getElementById('btn-add-tag').addEventListener('click', function () {
+        const input     = document.getElementById('nuevo-tag-input');
+        const nombre    = input.value.trim().toLowerCase().replace(/\s+/g, '');
+        const container = document.getElementById('nuevos-tags-container');
+
+        if (nombre === '') return;
+
+        // Evitar duplicados
+        const existentes = container.querySelectorAll('input[type=checkbox]');
+        for (const cb of existentes) {
+            if (cb.value === nombre) { input.value = ''; return; }
+        }
+
+        const label = document.createElement('label');
+        label.className = 'hashtag-opcion hashtag-nuevo';
+        label.innerHTML = `<input type="checkbox" name="hashtags[]" value="${nombre}" checked> #${nombre}`;
+        container.appendChild(label);
+        input.value = '';
+    });
+</script>
+
+{% endblock %}

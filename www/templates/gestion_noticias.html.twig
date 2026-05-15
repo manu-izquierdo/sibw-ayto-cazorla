@@ -1,0 +1,95 @@
+{% extends "base.html.twig" %}
+
+{% block tituloPagina %} <title>Gestión de Noticias – Ayto Cazorla</title> {% endblock %}
+
+{% block formatoCss %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+{% endblock %}
+
+{% block cuerpo %}
+
+<main class="main-gestion">
+
+    <div class="gestion-cabecera">
+        <h2>Gestión de noticias</h2>
+        <a href="/noticias?accion=nueva" class="btn-nueva-noticia">
+            <i class="fa-solid fa-plus"></i> Nueva noticia
+        </a>
+    </div>
+
+    {# Buscador doble: por título y por descripción #}
+    <form action="/noticias" method="GET" class="form-busqueda form-busqueda-noticias">
+        <input type="text" name="buscar_titulo" class="input-estilo input-busqueda"
+               placeholder="Buscar por título..."
+               value="{{ busqueda_titulo }}">
+        <input type="text" name="buscar_desc" class="input-estilo input-busqueda"
+               placeholder="Buscar por descripción..."
+               value="{{ busqueda_desc }}">
+        <button type="submit" class="btn-buscar">
+            <i class="fa-solid fa-magnifying-glass"></i> Buscar
+        </button>
+        {% if busqueda_titulo or busqueda_desc %}
+            <a href="/noticias" class="btn-limpiar">Limpiar</a>
+        {% endif %}
+    </form>
+
+    {% if noticias is empty %}
+        <p class="gestion-vacio">No se encontraron noticias.</p>
+    {% else %}
+        <table class="tabla-gestion">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Imagen</th>
+                    <th>Título</th>
+                    <th>Tipo</th>
+                    <th>Concejalía</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in noticias %}
+                <tr>
+                    <td>{{ n.id }}</td>
+                    <td>
+                        {% if n.ruta %}
+                            <img src="{{ n.ruta }}" alt="{{ n.titulo }}" class="thumb-noticia">
+                        {% else %}
+                            <span class="sin-imagen">Sin imagen</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/noticia/{{ n.id }}" class="enlace-noticia">{{ n.titulo }}</a>
+                    </td>
+                    <td>{{ n.tipo }}</td>
+                    <td>{{ n.concejalia }}</td>
+                    <td>{{ n.fecha|date("d/m/Y") }}</td>
+                    <td class="td-acciones">
+
+                        {# Editar #}
+                        <a href="/noticias?accion=form-editar&id={{ n.id }}"
+                           class="btn-icono btn-editar-toggle" title="Editar noticia">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+
+                        {# Borrar #}
+                        <form action="/noticias" method="POST" style="display:inline"
+                              onsubmit="return confirm('¿Borrar la noticia «{{ n.titulo }}»? Se eliminarán también sus imágenes y comentarios.');">
+                            <input type="hidden" name="accion"     value="borrar">
+                            <input type="hidden" name="id_noticia" value="{{ n.id }}">
+                            <button type="submit" class="btn-icono btn-borrar" title="Borrar noticia">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+</main>
+
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends "base.html.twig" %}
+
+{% block tituloPagina %} <title>Gestión de Comentarios – Ayto Cazorla</title> {% endblock %}
+
+{% block formatoCss %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+{% endblock %}
+
+{% block cuerpo %}
+
+<main class="main-gestion">
+
+    <div class="gestion-cabecera">
+        <h2>Gestión de comentarios</h2>
+
+        {# Buscador #}
+        <form action="/comentarios" method="GET" class="form-busqueda">
+            <input type="text" name="buscar" class="input-estilo input-busqueda"
+                   placeholder="Buscar por autor o texto..."
+                   value="{{ busqueda }}">
+            <button type="submit" class="btn-buscar">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar
+            </button>
+            {% if busqueda %}
+                <a href="/comentarios" class="btn-limpiar">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if comentarios is empty %}
+        <p class="gestion-vacio">No se encontraron comentarios.</p>
+    {% else %}
+        <table class="tabla-gestion">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Noticia</th>
+                    <th>Autor</th>
+                    <th>Fecha</th>
+                    <th>Texto</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in comentarios %}
+                <tr>
+                    <td>{{ c.id }}</td>
+                    <td>
+                        <a href="/noticia/{{ c.noticia_id }}" class="enlace-noticia">
+                            {{ c.titulo_noticia|slice(0, 40) }}{% if c.titulo_noticia|length > 40 %}…{% endif %}
+                        </a>
+                    </td>
+                    <td>{{ c.nombre }}</td>
+                    <td>{{ c.fecha|date("d/m/Y H:i") }}</td>
+                    <td>
+                        {{ c.texto|slice(0, 80) }}{% if c.texto|length > 80 %}…{% endif %}
+                        {% if c.editado %}
+                            <span class="badge-editado">editado</span>
+                        {% endif %}
+                    </td>
+                    <td class="td-acciones">
+
+                        {# Botón editar: abre el formulario inline #}
+                        <button class="btn-icono btn-editar-toggle"
+                                onclick="toggleEditar({{ c.id }})"
+                                title="Editar comentario">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        {# Botón borrar #}
+                        <form action="/comentarios" method="POST" style="display:inline"
+                              onsubmit="return confirm('¿Borrar este comentario?');">
+                            <input type="hidden" name="accion"       value="borrar">
+                            <input type="hidden" name="id_comentario" value="{{ c.id }}">
+                            <input type="hidden" name="origen"        value="gestion">
+                            <button type="submit" class="btn-icono btn-borrar" title="Borrar comentario">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                {# Fila oculta con formulario de edición inline #}
+                <tr id="fila-editar-{{ c.id }}" class="fila-editar" style="display:none;">
+                    <td colspan="6">
+                        <form action="/comentarios" method="POST" class="form-editar-inline">
+                            <input type="hidden" name="accion"        value="editar">
+                            <input type="hidden" name="id_comentario" value="{{ c.id }}">
+                            <input type="hidden" name="origen"        value="gestion">
+                            <textarea name="texto" class="input-estilo textarea-editar" rows="3" required>{{ c.texto }}</textarea>
+                            <div class="acciones-editar">
+                                <button type="submit" class="btn-auth btn-guardar-edicion">
+                                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                                </button>
+                                <button type="button" class="btn-cancelar-edicion"
+                                        onclick="toggleEditar({{ c.id }})">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+</main>
+
+<script>
+    function toggleEditar(id) {
+        const fila = document.getElementById('fila-editar-' + id);
+        fila.style.display = fila.style.display === 'none' ? 'table-row' : 'none';
+    }
+</script>
+
+{% endblock %}
