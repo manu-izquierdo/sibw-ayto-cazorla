@@ -66,12 +66,15 @@ Sistema dinámico:
 - Galería de imágenes
 
 ### Práctica 4: Autenticación (PHP II) - 30%
-Gestión de contenidos:
-- Sistema usuarios con 5 roles
-- Login/Logout
-- CRUD noticias
-- Moderación comentarios
-- Panel administrativo
+Gestión de contenidos con sistema de roles:
+- **Usuarios y sesiones**: registro, login/logout y perfil editable con contraseñas hasheadas (`password_hash`)
+- **5 roles**: anónimo, registrado, moderador, gestor y superusuario
+- **Moderación**: editar y borrar comentarios desde la noticia o desde el panel `/comentarios`, con badge "Mensaje editado por el moderador"
+- **Gestión de noticias**: CRUD completo desde la noticia o desde el panel `/noticias`, con buscador doble (título + descripción)
+- **Hashtags**: asociación N:M con noticias, visibles como etiquetas en cada noticia
+- **Imágenes**: selección desde la carpeta `img/Noticias/` sin subida de archivos
+- **Gestión de usuarios**: el superusuario puede cambiar roles y eliminar usuarios, con protección para que nunca quede el sistema sin superusuario
+- **Control de acceso**: verificación de rol tanto en cliente (menú dinámico) como en servidor (cabecera de cada controlador)
 
 ### ⌛ Práctica 5:
 ...
@@ -83,18 +86,21 @@ Gestión de contenidos:
 Tablas principales:
 - **noticias** - Títulos, descripciones, fecha
 - **imagenes** - Rutas de fotos por noticia
-- **comentarios** - Nombre, email, texto
+- **comentarios** - Nombre, email, texto, flag `editado`
 - **lugares** - Localidades para resaltado
-- **usuarios** (P4) - Autenticación y roles
+- **usuarios** - Autenticación y roles (P4)
+- **hashtags** - Etiquetas únicas (P4)
+- **noticia_hashtag** - Relación N:M noticias ↔ hashtags (P4)
 
 ---
 
 ## Seguridad
 
 ✅ Prepared statements (evita SQL injection)  
-✅ Validación servidor  
-✅ Contraseñas hash  
-✅ Sesiones PHP  
+✅ Validación y sanitización en servidor  
+✅ Contraseñas hasheadas con `password_hash`  
+✅ Sesiones PHP con verificación de rol  
+✅ Control de acceso server-side en cada controlador  
 
 ---
 
@@ -104,7 +110,8 @@ Tablas principales:
 sibw-ayto-cazorla/
 ├── www/
 │   ├── index.php (router)
-│   ├── bd.php (conexión BD)
+│   ├── bd.php (conexión BD + session_start)
+│   ├── controlador_*.php
 │   ├── css/ (estilos)
 │   ├── js/ (javascript)
 │   ├── templates/ (Twig)
@@ -116,9 +123,16 @@ sibw-ayto-cazorla/
 
 ---
 
-## Inicio de Sesión (Práctica 4)
+## Usuarios de prueba (P4)
 
-Usuarios de prueba en `updatedata.sql`
+Contraseña de todos: `1234`
+
+| Email | Rol |
+|---|---|
+| registrado@cazorla.es | registrado |
+| moderador@cazorla.es | moderador |
+| gestor@cazorla.es | gestor |
+| admin@cazorla.es | superusuario |
 
 ---
 
@@ -139,8 +153,8 @@ docker exec lamp-mysql8 mysql -u root -proot < www/database/setup.sql
 
 ## Estado
 
-✅ Prácticas 1-3 completadas  
-⏳ Práctica 4 en desarrollo
+✅ Prácticas 1-4 completadas  
+⏳ Práctica 5 pendiente
 
 ---
 
