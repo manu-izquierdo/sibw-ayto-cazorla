@@ -17,7 +17,7 @@ Portal web para gestionar noticias e incidencias del Ayuntamiento de Cazorla. Si
 git clone https://github.com/manu-izquierdo/sibw-ayto-cazorla.git
 cd sibw-ayto-cazorla
 cp sample.env .env
-docker-compose up -d --build
+docker compose up -d --build
 # Acceder: http://localhost
 ```
 
