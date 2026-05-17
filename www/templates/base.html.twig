@@ -53,12 +53,12 @@
                 {% if sesion_rol in ['gestor', 'superusuario'] %}
                     {# Opciones de gestión del sitio #}
                     <li><a href="/noticias">Gestión noticias</a></li>
+                    <li><a href="/hashtags">Gestión hashtags</a></li>
                 {% endif %}
 
                 {% if sesion_rol == 'superusuario' %}
                     {# Opciones exclusivas del superusuario #}
                     <li><a href="/usuarios">Gestión usuarios</a></li>
-                    <li><a href="/hashtags">Gestión hashtag</a></li>
                 {% endif %}
             </ul>
         </aside>

@@ -71,10 +71,9 @@
 
     <aside class="formulario">
         <button id="cancel">&times;</button>
-        <button id="boton-bloque-formulario"> <i class="fa-solid fa-plus"></i> </button>
-
         {# Formulario de nuevo comentario: solo para usuarios logueados #}
         {% if sesion_id %}
+            <button id="boton-bloque-formulario"> <i class="fa-solid fa-plus"></i> </button>
             <form class="bloque-formulario" action="/noticia/{{ noticia.id }}" method="POST">
                 <input type="hidden" name="noticia_id" value="{{ noticia.id }}">
 
