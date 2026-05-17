@@ -5,16 +5,12 @@
 {% block formatoCss %}
     {{ parent() }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-    <script>
-        const localidades = {{ lugares_js|json_encode|raw }};
-    </script>
-    <script src="js/script.js" defer></script>
 {% endblock %}
 
 {% block cuerpo %}
 
-    <main class="main-noticia">
+    {# data-localidades pasa el array PHP a JS sin necesidad de <script> inline #}
+    <main class="main-noticia" data-localidades="{{ lugares_js|json_encode }}">
         <article class="articulo-contenedor">
             <header class="header-noticia">
                 <h1> {{ noticia.titulo }} </h1>
@@ -172,15 +168,5 @@
             {% endfor %}
         </ul>
     </aside>
-
-    <script>
-        function toggleEditarComentario(id) {
-            const form  = document.getElementById('form-editar-' + id);
-            const texto = document.getElementById('texto-' + id);
-            const oculto = form.style.display === 'none';
-            form.style.display  = oculto ? 'block' : 'none';
-            texto.style.display = oculto ? 'none'  : 'block';
-        }
-    </script>
 
 {% endblock %}

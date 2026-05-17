@@ -84,7 +84,7 @@
                     </label>
                 {% endfor %}
             </div>
-            {# Campo para añadir hashtags nuevos #}
+            {# btn-add-tag y nuevo-tag-input son leídos por script.js #}
             <div class="nuevo-hashtag">
                 <input type="text" id="nuevo-tag-input" class="input-estilo"
                        placeholder="Nuevo hashtag (pulsa Añadir)">
@@ -142,28 +142,5 @@
 
     </form>
 </main>
-
-<script>
-    // Añadir nuevos hashtags dinámicamente
-    document.getElementById('btn-add-tag').addEventListener('click', function () {
-        const input     = document.getElementById('nuevo-tag-input');
-        const nombre    = input.value.trim().toLowerCase().replace(/\s+/g, '');
-        const container = document.getElementById('nuevos-tags-container');
-
-        if (nombre === '') return;
-
-        // Evitar duplicados
-        const existentes = container.querySelectorAll('input[type=checkbox]');
-        for (const cb of existentes) {
-            if (cb.value === nombre) { input.value = ''; return; }
-        }
-
-        const label = document.createElement('label');
-        label.className = 'hashtag-opcion hashtag-nuevo';
-        label.innerHTML = `<input type="checkbox" name="hashtags[]" value="${nombre}" checked> #${nombre}`;
-        container.appendChild(label);
-        input.value = '';
-    });
-</script>
 
 {% endblock %}
