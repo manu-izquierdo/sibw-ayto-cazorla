@@ -59,8 +59,8 @@ Componentes dinámicos:
 
 ### Práctica 3: Backend (PHP + BD) - 30%
 Sistema dinámico:
-- Conexión MySQL
-- Patrón MVC con Twig
+- Conexiones no persistentes (abrir y cerrar por consulta)
+- Separación Modelo-Controlador (modelo_*.php / controlador_*.php)
 - URLs limpias
 - Validación servidor (SQL injection prevention)
 - Galería de imágenes
@@ -111,6 +111,7 @@ sibw-ayto-cazorla/
 ├── www/
 │   ├── index.php (router)
 │   ├── bd.php (conexión BD + session_start)
+│   ├── modelo_*.php
 │   ├── controlador_*.php
 │   ├── css/ (estilos)
 │   ├── js/ (javascript)
