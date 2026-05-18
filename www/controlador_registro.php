@@ -1,4 +1,6 @@
 <?php
+    require_once "modelo_registro.php";
+
     // Si ya está logueado, redirigir a portada
     if (isset($_SESSION['usuario_id'])) {
         header("Location: /");
@@ -6,14 +8,13 @@
     }
 
     $error = null;
-    $exito = null;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        $nombre   = isset($_POST['nombre'])    ? trim($_POST['nombre'])    : '';
-        $email    = isset($_POST['email'])     ? trim($_POST['email'])     : '';
-        $password = isset($_POST['password'])  ? trim($_POST['password'])  : '';
-        $password2= isset($_POST['password2']) ? trim($_POST['password2']) : '';
+        $nombre    = isset($_POST['nombre'])    ? trim($_POST['nombre'])    : '';
+        $email     = isset($_POST['email'])     ? trim($_POST['email'])     : '';
+        $password  = isset($_POST['password'])  ? trim($_POST['password'])  : '';
+        $password2 = isset($_POST['password2']) ? trim($_POST['password2']) : '';
 
         // Validaciones
         if ($nombre === '' || $email === '' || $password === '' || $password2 === '') {
@@ -28,39 +29,22 @@
         } elseif ($password !== $password2) {
             $error = "Las contraseñas no coinciden.";
 
+        } elseif (emailExiste($email)) {
+            $error = "Ese correo electrónico ya está registrado.";
+
         } else {
-            // Comprobar si el email ya está registrado
-            $stmt = $mysqli->prepare("SELECT id FROM usuarios WHERE email = ?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $stmt->store_result();
+            $hash     = password_hash($password, PASSWORD_DEFAULT);
+            $nuevo_id = insertarUsuario($nombre, $email, $hash);
 
-            if ($stmt->num_rows > 0) {
-                $error = "Ese correo electrónico ya está registrado.";
-                $stmt->close();
+            if ($nuevo_id) {
+                $_SESSION['usuario_id']     = $nuevo_id;
+                $_SESSION['usuario_nombre'] = $nombre;
+                $_SESSION['usuario_rol']    = 'registrado';
+
+                header("Location: /");
+                exit;
             } else {
-                $stmt->close();
-
-                // Hashear la contraseña antes de guardarla
-                $hash = password_hash($password, PASSWORD_DEFAULT);
-
-                // Insertar nuevo usuario con rol 'registrado' por defecto
-                $stmt = $mysqli->prepare("INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, 'registrado')");
-                $stmt->bind_param("sss", $nombre, $email, $hash);
-
-                if ($stmt->execute()) {
-                    // Logueamos automáticamente al usuario recién registrado
-                    $_SESSION['usuario_id']     = $mysqli->insert_id;
-                    $_SESSION['usuario_nombre'] = $nombre;
-                    $_SESSION['usuario_rol']    = 'registrado';
-                    $stmt->close();
-
-                    header("Location: /");
-                    exit;
-                } else {
-                    $error = "Error al registrar el usuario. Inténtalo de nuevo.";
-                    $stmt->close();
-                }
+                $error = "Error al registrar el usuario. Inténtalo de nuevo.";
             }
         }
     }

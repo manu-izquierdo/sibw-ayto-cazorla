@@ -1,22 +1,12 @@
 <?php
-    // Ya NO hay require_once de autoload ni de bd.php por hacerlos dentro del index.php, este "hereda" las variables $mysqli y $twig
+    require_once "modelo_portada.php";
 
-    $sql = "SELECT n.id, n.titulo, MIN(i.ruta) as ruta
-            FROM noticias n
-            LEFT JOIN imagenes i ON n.id = i.noticia_id
-            GROUP BY n.id, n.titulo";
+    $noticias = obtenerNoticias();
 
-    $resultado = $mysqli->query($sql);
-
-    if (!$resultado) {
-        die("Error en la consulta: " . $mysqli->error);
-    }
-
-    $noticias = $resultado->fetch_all(MYSQLI_ASSOC);
     if (!$noticias) {
-        die("Error 404: La pagina solicitada no existe.");
+        die("Error 404: La página solicitada no existe.");
     }
-    
+
     echo $twig->render('portada.html.twig', [
         'noticias' => $noticias
     ]);

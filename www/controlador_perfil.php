@@ -1,4 +1,6 @@
 <?php
+    require_once "modelo_perfil.php";
+
     // Solo usuarios logueados pueden acceder
     if (!isset($_SESSION['usuario_id'])) {
         header("Location: /login");
@@ -12,12 +14,7 @@
     // ── ELIMINAR CUENTA ──────────────────────────────────────────────────────
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
 
-        $stmt = $mysqli->prepare("DELETE FROM usuarios WHERE id = ?");
-        $stmt->bind_param("i", $id_usuario);
-        $stmt->execute();
-        $stmt->close();
-
-        // Destruimos la sesión y redirigimos a la portada
+        eliminarUsuario($id_usuario);
         $_SESSION = [];
         session_destroy();
         header("Location: /");
@@ -32,7 +29,6 @@
         $password  = isset($_POST['password'])  ? trim($_POST['password'])  : '';
         $password2 = isset($_POST['password2']) ? trim($_POST['password2']) : '';
 
-        // Validaciones básicas
         if ($nombre === '' || $email === '') {
             $error = "El nombre y el correo son obligatorios.";
 
@@ -45,53 +41,29 @@
         } elseif ($password !== '' && $password !== $password2) {
             $error = "Las contraseñas no coinciden.";
 
+        } elseif (emailEnUso($email, $id_usuario)) {
+            $error = "Ese correo ya está en uso por otra cuenta.";
+
         } else {
-            // Comprobar que el email no lo usa otro usuario distinto
-            $stmt = $mysqli->prepare("SELECT id FROM usuarios WHERE email = ? AND id != ?");
-            $stmt->bind_param("si", $email, $id_usuario);
-            $stmt->execute();
-            $stmt->store_result();
-
-            if ($stmt->num_rows > 0) {
-                $error = "Ese correo ya está en uso por otra cuenta.";
-                $stmt->close();
+            if ($password !== '') {
+                $hash      = password_hash($password, PASSWORD_DEFAULT);
+                $resultado = actualizarUsuarioConPassword($id_usuario, $nombre, $email, $hash);
             } else {
-                $stmt->close();
+                $resultado = actualizarUsuario($id_usuario, $nombre, $email);
+            }
 
-                if ($password !== '') {
-                    // Actualizar nombre, email Y contraseña
-                    $hash = password_hash($password, PASSWORD_DEFAULT);
-                    $stmt = $mysqli->prepare("UPDATE usuarios SET nombre = ?, email = ?, password = ? WHERE id = ?");
-                    $stmt->bind_param("sssi", $nombre, $email, $hash, $id_usuario);
-                } else {
-                    // Actualizar solo nombre y email
-                    $stmt = $mysqli->prepare("UPDATE usuarios SET nombre = ?, email = ? WHERE id = ?");
-                    $stmt->bind_param("ssi", $nombre, $email, $id_usuario);
-                }
-
-                if ($stmt->execute()) {
-                    // Actualizamos también los datos de sesión
-                    $_SESSION['usuario_nombre'] = $nombre;
-
-                    // Refrescamos los globales de Twig para que el encabezado
-                    // muestre el nombre nuevo sin necesidad de hacer logout
-                    $twig->addGlobal('sesion_nombre', $nombre);
-
-                    $exito = "Datos actualizados correctamente.";
-                } else {
-                    $error = "Error al actualizar los datos. Inténtalo de nuevo.";
-                }
-                $stmt->close();
+            if ($resultado) {
+                $_SESSION['usuario_nombre'] = $nombre;
+                $twig->addGlobal('sesion_nombre', $nombre);
+                $exito = "Datos actualizados correctamente.";
+            } else {
+                $error = "Error al actualizar los datos. Inténtalo de nuevo.";
             }
         }
     }
 
-    // ── CARGAR DATOS ACTUALES DEL USUARIO ────────────────────────────────────
-    $stmt = $mysqli->prepare("SELECT nombre, email, rol, fecha_registro FROM usuarios WHERE id = ?");
-    $stmt->bind_param("i", $id_usuario);
-    $stmt->execute();
-    $usuario = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
+    // ── CARGAR DATOS ACTUALES ────────────────────────────────────────────────
+    $usuario = obtenerUsuarioPorId($id_usuario);
 
     if (!$usuario) {
         // El usuario fue eliminado o no existe, cerramos sesión

@@ -6,22 +6,23 @@
 
     date_default_timezone_set('Europe/Madrid');
 
-    $host = "lamp-mysql8";
-    $db   = "sibw";
-    $user = "manu_sibw";
-    $pass = "practica3";
+    // Conexión no persistente
+    function conectar() {
+        $host = "lamp-mysql8";
+        $db   = "sibw";
+        $user = "manu_sibw";
+        $pass = "practica3";
 
-    // Abre una nueva conexión a MySQL usando las credenciales anteriores
-    $mysqli = new mysqli($host, $user, $pass, $db);
-
-    // Si la conexión falla, el script se detiene y muestra un error.
-    if ($mysqli->connect_error) {
-        die("Error crítico: No se pudo conectar a la base de datos.");
-    }
+        $mysqli = new mysqli($host, $user, $pass, $db);
     
-    // Arreglo desfase de 2 horas
-    $mysqli->query("SET time_zone = '+02:00'");
-
-    // Codificación a UTF-8 para evitar problemas
-    $mysqli->set_charset("utf8mb4");
+        // Si la conexión falla, el script se detiene y muestra un error.
+        if ($mysqli->connect_error) {
+            die("Error crítico: No se pudo conectar a la base de datos.");
+        }
+ 
+        $mysqli->query("SET time_zone = '+02:00'");
+        $mysqli->set_charset("utf8mb4");
+ 
+        return $mysqli;
+    }
 ?>
