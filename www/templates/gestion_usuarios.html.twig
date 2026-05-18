@@ -22,9 +22,6 @@
     {% if exito %}
         <p class="auth-exito">{{ exito }}</p>
     {% endif %}
-    {% if error %}
-        <p class="auth-error">{{ error }}</p>
-    {% endif %}
 
     <table class="tabla-gestion">
         <thead>
@@ -83,7 +80,8 @@
                 <td class="td-acciones">
                     {% if u.id != mi_id %}
                         <form action="/usuarios" method="POST" style="display:inline"
-                              onsubmit="return confirm('¿Eliminar al usuario {{ u.nombre }}?');">
+                              class="form-confirmar"
+                              data-mensaje="¿Eliminar al usuario {{ u.nombre }}?">
                             <input type="hidden" name="accion"     value="eliminar">
                             <input type="hidden" name="id_usuario" value="{{ u.id }}">
                             <button type="submit" class="btn-icono btn-borrar" title="Eliminar usuario">

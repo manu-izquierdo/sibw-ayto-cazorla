@@ -62,7 +62,8 @@
         <div class="zona-peligrosa">
             <p>¿Quieres eliminar tu cuenta? Esta acción no se puede deshacer.</p>
             <form action="/perfil" method="POST"
-                  onsubmit="return confirm('¿Seguro que quieres eliminar tu cuenta? Esta acción es irreversible.');">
+                  class="form-confirmar"
+                  data-mensaje="¿Seguro que quieres eliminar tu cuenta? Esta acción es irreversible.">
                 <input type="hidden" name="accion" value="eliminar">
                 <button type="submit" class="btn-eliminar">Eliminar mi cuenta</button>
             </form>

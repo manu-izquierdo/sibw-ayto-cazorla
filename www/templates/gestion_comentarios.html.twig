@@ -61,17 +61,17 @@
                     </td>
                     <td class="td-acciones">
 
-                        {# Botón editar: abre el formulario inline #}
-                        <button class="btn-icono btn-editar-toggle"
-                                onclick="toggleEditar({{ c.id }})"
+                        <button class="btn-icono btn-editar-toggle btn-toggle-gestion"
+                                data-id="{{ c.id }}"
                                 title="Editar comentario">
                             <i class="fa-solid fa-pen"></i>
                         </button>
 
-                        {# Botón borrar #}
-                        <form action="/comentarios" method="POST" style="display:inline"
-                              onsubmit="return confirm('¿Borrar este comentario?');">
-                            <input type="hidden" name="accion"       value="borrar">
+                        <form action="/comentarios" method="POST"
+                              style="display:inline"
+                              class="form-confirmar"
+                              data-mensaje="¿Borrar este comentario?">
+                            <input type="hidden" name="accion"        value="borrar">
                             <input type="hidden" name="id_comentario" value="{{ c.id }}">
                             <input type="hidden" name="origen"        value="gestion">
                             <button type="submit" class="btn-icono btn-borrar" title="Borrar comentario">
@@ -93,8 +93,9 @@
                                 <button type="submit" class="btn-auth btn-guardar-edicion">
                                     <i class="fa-solid fa-floppy-disk"></i> Guardar
                                 </button>
-                                <button type="button" class="btn-cancelar-edicion"
-                                        onclick="toggleEditar({{ c.id }})">
+                                <button type="button"
+                                        class="btn-cancelar-edicion btn-cancelar-gestion"
+                                        data-id="{{ c.id }}">
                                     Cancelar
                                 </button>
                             </div>

@@ -88,9 +88,10 @@
                             <i class="fa-solid fa-pen"></i>
                         </a>
 
-                        {# Borrar #}
-                        <form action="/noticias" method="POST" style="display:inline"
-                              onsubmit="return confirm('¿Borrar la noticia «{{ n.titulo }}»? Se eliminarán también sus imágenes y comentarios.');">
+                        <form action="/noticias" method="POST"
+                              style="display:inline"
+                              class="form-confirmar"
+                              data-mensaje="¿Borrar la noticia «{{ n.titulo }}»? Se eliminarán también sus imágenes y comentarios.">
                             <input type="hidden" name="accion"     value="borrar">
                             <input type="hidden" name="id_noticia" value="{{ n.id }}">
                             <button type="submit" class="btn-icono btn-borrar" title="Borrar noticia">

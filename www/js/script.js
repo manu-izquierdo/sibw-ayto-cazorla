@@ -70,9 +70,7 @@ if (formulario) {
     });
 }
 
-// ── Resaltado de localidades en el texto del comentario ──────────────────────
-// Los datos vienen del atributo data-localidades del <main>, puesto desde Twig
-// sin necesidad de ningún <script> inline
+// ── Resaltado de localidades ──────────────────────────────────────────────────
 
 const mainNoticia = document.querySelector('.main-noticia');
 const localidades = mainNoticia
@@ -90,7 +88,33 @@ if (inputTexto) {
     });
 }
 
+// ── Confirmación antes de enviar formularios peligrosos ──────────────────────
+// Todos los <form class="form-confirmar" data-mensaje="..."> piden confirm()
+
+document.querySelectorAll('.form-confirmar').forEach(function (form) {
+    form.addEventListener('submit', function (e) {
+        const mensaje = form.dataset.mensaje || '¿Estás seguro?';
+        if (!confirm(mensaje)) {
+            e.preventDefault();
+        }
+    });
+});
+
 // ── Edición inline de comentarios desde la página de noticia ─────────────────
+// Botones con clase btn-toggle-comentario y data-id
+
+document.querySelectorAll('.btn-toggle-comentario').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        toggleEditarComentario(btn.dataset.id);
+    });
+});
+
+// Botones cancelar con clase btn-cancelar-comentario y data-id
+document.querySelectorAll('.btn-cancelar-comentario').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        toggleEditarComentario(btn.dataset.id);
+    });
+});
 
 function toggleEditarComentario(id) {
     const form  = document.getElementById('form-editar-' + id);
@@ -102,6 +126,19 @@ function toggleEditarComentario(id) {
 }
 
 // ── Edición inline de comentarios desde el panel de gestión ──────────────────
+// Botones con clase btn-toggle-gestion y data-id
+
+document.querySelectorAll('.btn-toggle-gestion').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        toggleEditar(btn.dataset.id);
+    });
+});
+
+document.querySelectorAll('.btn-cancelar-gestion').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        toggleEditar(btn.dataset.id);
+    });
+});
 
 function toggleEditar(id) {
     const fila = document.getElementById('fila-editar-' + id);
@@ -133,9 +170,7 @@ if (btnAddTag) {
     });
 }
 
-// ── Alerta de errores del servidor (páginas de gestión) ──────────────────────
-// El error se pasa como <meta name="server-error"> en el <head> del Twig
-// sin ningún <script> inline
+// ── Alerta de errores del servidor ───────────────────────────────────────────
 
 const metaError = document.querySelector('meta[name="server-error"]');
 if (metaError) {

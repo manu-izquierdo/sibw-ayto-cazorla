@@ -5,6 +5,9 @@
 {% block formatoCss %}
     {{ parent() }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    {% if error %}
+        <meta name="server-error" content="{{ error }}">
+    {% endif %}
 {% endblock %}
 
 {% block cuerpo %}
@@ -68,7 +71,8 @@
                     {# Borrar #}
                     <td class="td-acciones">
                         <form action="/hashtags" method="POST" style="display:inline"
-                              onsubmit="return confirm('¿Borrar #{{ tag.nombre }}? Se desvinculará de todas sus noticias.');">
+                              class="form-confirmar"
+                              data-mensaje="¿Borrar #{{ tag.nombre }}? Se desvinculará de todas sus noticias.">
                             <input type="hidden" name="accion"     value="borrar">
                             <input type="hidden" name="id_hashtag" value="{{ tag.id }}">
                             <button type="submit" class="btn-icono btn-borrar" title="Borrar hashtag">
