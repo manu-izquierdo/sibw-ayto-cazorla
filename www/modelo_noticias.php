@@ -120,36 +120,6 @@ function obtenerImagenesDeNoticia($noticia_id) {
     return $imagenes;
 }
 
-function listarImagenesDisponibles($noticia_id) {
-    $dir       = '/var/www/html/img/Noticias/';
-    $permitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-    $todas     = [];
-
-    if (is_dir($dir)) {
-        foreach (scandir($dir) as $archivo) {
-            if ($archivo === '.' || $archivo === '..') continue;
-            $ext = strtolower(pathinfo($archivo, PATHINFO_EXTENSION));
-            if (in_array($ext, $permitidas)) {
-                $todas[] = 'img/Noticias/' . $archivo;
-            }
-        }
-    }
-
-    $mysqli       = conectar();
-    $ya_asociadas = [];
-
-    if ($noticia_id > 0) {
-        $stmt = $mysqli->prepare("SELECT ruta FROM imagenes WHERE noticia_id = ?");
-        $stmt->bind_param("i", $noticia_id);
-        $stmt->execute();
-        $res          = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-        $ya_asociadas = array_column($res, 'ruta');
-        $stmt->close();
-    }
-
-    $mysqli->close();
-    return array_values(array_diff($todas, $ya_asociadas));
-}
 
 function crearNoticia($titulo, $descripcion, $tipo, $concejalia, $lugar_id) {
     $mysqli    = conectar();
@@ -186,8 +156,23 @@ function actualizarNoticia($id, $titulo, $descripcion, $tipo, $concejalia, $luga
 
 function borrarNoticia($id) {
     $mysqli = conectar();
-    // Las imágenes y comentarios se borran en cascada por las FK
 
+    // Obtener las rutas de las imágenes antes de borrar en cascada
+    $stmt = $mysqli->prepare("SELECT ruta FROM imagenes WHERE noticia_id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $rutas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+
+    // Borrar archivos físicos del disco
+    foreach ($rutas as $fila) {
+        $ruta_abs = '/var/www/html/' . $fila['ruta'];
+        if (file_exists($ruta_abs)) {
+            unlink($ruta_abs);
+        }
+    }
+
+    // Borrar la noticia (imágenes y comentarios se borran en cascada por FK)
     $stmt = $mysqli->prepare("DELETE FROM noticias WHERE id = ?");
     $stmt->bind_param("i", $id);
     $resultado = $stmt->execute();
@@ -238,39 +223,66 @@ function borrarHashtagsDeNoticia($noticia_id) {
     $mysqli->close();
 }
 
-function asociarImagenes($noticia_id, $rutas) {
-    foreach ($rutas as $ruta) {
-        $ruta = trim($ruta);
-        if ($ruta === '') continue;
-
-        $mysqli = conectar();
-
-        $stmt = $mysqli->prepare("SELECT id FROM imagenes WHERE noticia_id = ? AND ruta = ?");
-        $stmt->bind_param("is", $noticia_id, $ruta);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if ($stmt->num_rows === 0) {
-            $stmt->close();
-            $stmt = $mysqli->prepare("INSERT INTO imagenes (noticia_id, ruta) VALUES (?, ?)");
-            $stmt->bind_param("is", $noticia_id, $ruta);
-            $stmt->execute();
-        }
-
-        $stmt->close();
-        $mysqli->close();
-    }
-}
 
 function borrarImagenesSeleccionadas($imgs_borrar, $noticia_id) {
     foreach ($imgs_borrar as $img_id) {
         $mysqli     = conectar();
         $img_id_int = intval($img_id);
 
+        // Obtener la ruta antes de borrar
+        $stmt = $mysqli->prepare("SELECT ruta FROM imagenes WHERE id = ? AND noticia_id = ?");
+        $stmt->bind_param("ii", $img_id_int, $noticia_id);
+        $stmt->execute();
+        $fila = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        // Borrar archivo físico
+        if ($fila) {
+            $ruta_abs = '/var/www/html/' . $fila['ruta'];
+            if (file_exists($ruta_abs)) {
+                unlink($ruta_abs);
+            }
+        }
+
+        // Borrar registro de BD
         $stmt = $mysqli->prepare("DELETE FROM imagenes WHERE id = ? AND noticia_id = ?");
         $stmt->bind_param("ii", $img_id_int, $noticia_id);
         $stmt->execute();
         $stmt->close();
         $mysqli->close();
     }
+}
+
+function subirImagenes($noticia_id) {
+    if (!isset($_FILES['imagenes']) || empty($_FILES['imagenes']['name'][0])) return;
+
+    $dir_abs    = '/var/www/html/img/Noticias/';
+    $dir_rel    = 'img/Noticias/';
+    $permitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+    if (!is_dir($dir_abs)) {
+        mkdir($dir_abs, 0775, true);
+    }
+
+    $mysqli = conectar();
+
+    foreach ($_FILES['imagenes']['tmp_name'] as $i => $tmp) {
+        if ($_FILES['imagenes']['error'][$i] !== UPLOAD_ERR_OK) continue;
+
+        $ext = strtolower(pathinfo($_FILES['imagenes']['name'][$i], PATHINFO_EXTENSION));
+        if (!in_array($ext, $permitidas)) continue;
+
+        $nombre   = 'n' . $noticia_id . '_' . uniqid() . '.' . $ext;
+        $ruta_abs = $dir_abs . $nombre;
+        $ruta_rel = $dir_rel . $nombre;
+
+        if (move_uploaded_file($tmp, $ruta_abs)) {
+            $stmt = $mysqli->prepare("INSERT INTO imagenes (noticia_id, ruta) VALUES (?, ?)");
+            $stmt->bind_param("is", $noticia_id, $ruta_rel);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+
+    $mysqli->close();
 }

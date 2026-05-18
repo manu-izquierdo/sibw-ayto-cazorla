@@ -113,23 +113,11 @@
             </div>
         {% endif %}
 
-        {# ── Selección de imágenes de la carpeta ── #}
         <div class="campo-form">
-            <label>Añadir imágenes</label>
-            {% if imgs_disponibles is empty %}
-                <p class="campo-ayuda">No hay imágenes disponibles en la carpeta img/Noticias/ o todas ya están asociadas.</p>
-            {% else %}
-                <p class="campo-ayuda">Selecciona las imágenes de la carpeta que quieras asociar a esta noticia.</p>
-                <div class="galeria-seleccion">
-                    {% for ruta in imgs_disponibles %}
-                        <label class="galeria-item">
-                            <input type="checkbox" name="imgs_sel[]" value="{{ ruta }}">
-                            <img src="{{ ruta }}" alt="{{ ruta }}">
-                            <span class="galeria-nombre">{{ ruta|split('/')|last }}</span>
-                        </label>
-                    {% endfor %}
-                </div>
-            {% endif %}
+            <label for="imagenes">{{ modo == 'editar' ? 'Añadir más imágenes' : 'Imágenes' }}</label>
+            <input type="file" id="imagenes" name="imagenes[]"
+                class="input-estilo" accept="image/*" multiple>
+            <p class="campo-ayuda">Formatos permitidos: JPG, PNG, GIF, WEBP. Puedes seleccionar varias.</p>
         </div>
 
         <div class="form-noticia-botones">

@@ -31,12 +31,11 @@
         $concejalia  = trim($_POST['concejalia']  ?? '');
         $lugar_id    = intval($_POST['lugar_id']  ?? 0);
         $hashtags    = $_POST['hashtags']         ?? [];
-        $imgs_sel    = $_POST['imgs_sel']         ?? [];
 
         if ($titulo !== '' && $descripcion !== '') {
             $nuevo_id = crearNoticia($titulo, $descripcion, $tipo, $concejalia, $lugar_id);
             guardarHashtags($nuevo_id, $hashtags);
-            asociarImagenes($nuevo_id, $imgs_sel);
+            subirImagenes($nuevo_id);
             header("Location: /noticia/" . $nuevo_id);
             exit;
         }
@@ -54,12 +53,11 @@
         $lugar_id    = intval($_POST['lugar_id']    ?? 0);
         $hashtags    = $_POST['hashtags']           ?? [];
         $imgs_borrar = $_POST['imgs_borrar']        ?? [];
-        $imgs_sel    = $_POST['imgs_sel']           ?? [];
 
         if ($id_noticia > 0 && $titulo !== '' && $descripcion !== '') {
             actualizarNoticia($id_noticia, $titulo, $descripcion, $tipo, $concejalia, $lugar_id);
             borrarImagenesSeleccionadas($imgs_borrar, $id_noticia);
-            asociarImagenes($id_noticia, $imgs_sel);
+            subirImagenes($id_noticia);
             borrarHashtagsDeNoticia($id_noticia);
             guardarHashtags($id_noticia, $hashtags);
             header("Location: /noticia/" . $id_noticia);
@@ -75,7 +73,6 @@
             'todos_hashtags'   => obtenerTodosHashtags(),
             'tags_noticia'     => [],
             'imagenes'         => [],
-            'imgs_disponibles' => listarImagenesDisponibles(0),
             'modo'             => 'crear'
         ]);
         exit;
@@ -94,7 +91,6 @@
             'todos_hashtags'   => obtenerTodosHashtags(),
             'tags_noticia'     => obtenerHashtagsDeNoticia($id_noticia),
             'imagenes'         => obtenerImagenesDeNoticia($id_noticia),
-            'imgs_disponibles' => listarImagenesDisponibles($id_noticia),
             'modo'             => 'editar'
         ]);
         exit;
