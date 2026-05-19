@@ -81,15 +81,21 @@ Gestión de contenidos con sistema de roles:
 - **Gestión de usuarios**: el superusuario puede cambiar roles y eliminar usuarios, con protección para que nunca quede el sistema sin superusuario
 - **Control de acceso**: verificación de rol tanto en cliente (menú dinámico Twig) como en servidor (cabecera de cada controlador)
 
-### ⌛ Práctica 5:
-...
+### Práctica 5: AJAX - 10%
+Funcionalidades asíncronas:
+- **Búsqueda dinámica en portada**: campo estilo Google con dropdown de resultados en tiempo real; al hacer clic en un resultado navega a la noticia; solo muestra noticias publicadas
+- **Búsqueda dinámica en gestión de noticias**: los buscadores existentes (título, descripción, hashtag) actualizan la tabla sin recargar la página, con búsqueda instantánea al escribir
+- **Estado publicado/no publicado**: campo `publicado TINYINT(1)` en la tabla `noticias`; solo las noticias publicadas aparecen en portada
+- **Toggle publicado con AJAX**: checkbox en el panel de gestión que cambia el estado de publicación en BD de forma instantánea sin recarga
+- **Endpoint JSON**: `controlador_ajax.php` (ruta `/ajax`) centraliza todas las peticiones AJAX, devuelve JSON y valida sesión cuando es necesario
+- **Peticiones con `async/await` + `fetch`**: patrón uniforme en todo el JS siguiendo el tutorial de la asignatura
 
 ---
 
 ## Base de Datos
 
 Tablas principales:
-- **noticias** - Títulos, descripciones, fecha, tipo, concejalía, lugar
+- **noticias** - Títulos, descripciones, fecha, tipo, concejalía, lugar, `publicado` (P5)
 - **imagenes** - Rutas de fotos por noticia (1:N, borrado en cascada)
 - **comentarios** - Nombre, email, texto, flag `editado` (borrado en cascada)
 - **lugares** - Localidades para resaltado automático en comentarios
@@ -108,6 +114,7 @@ Tablas principales:
 ✅ Control de acceso server-side (redirige a `/` si sin permisos)  
 ✅ Sin JavaScript inline en plantillas Twig  
 ✅ Borrado físico de archivos de imagen al eliminar noticias o imágenes  
+✅ Endpoint AJAX protegido por sesión para operaciones de escritura  
 
 ---
 
@@ -119,14 +126,14 @@ sibw-ayto-cazorla/
 │   ├── index.php               ← Router principal (Front Controller)
 │   ├── bd.php                  ← Conexión no persistente + session_start()
 │   ├── .htaccess               ← URLs limpias
-│   ├── modelo_portada.php
+│   ├── modelo_portada.php      ← obtenerNoticias() + buscarNoticiasPublicadas() (P5)
 │   ├── modelo_noticia.php
 │   ├── modelo_imprimir.php
 │   ├── modelo_login.php
 │   ├── modelo_registro.php
 │   ├── modelo_perfil.php
 │   ├── modelo_comentarios.php
-│   ├── modelo_noticias.php     ← CRUD + subida de imágenes + hashtags
+│   ├── modelo_noticias.php     ← CRUD + subida de imágenes + hashtags + togglePublicado() (P5)
 │   ├── modelo_hashtags.php
 │   ├── modelo_usuarios.php
 │   ├── controlador_portada.php
@@ -140,6 +147,7 @@ sibw-ayto-cazorla/
 │   ├── controlador_noticias.php
 │   ├── controlador_hashtags.php
 │   ├── controlador_usuarios.php
+│   ├── controlador_ajax.php    ← Endpoint JSON para peticiones AJAX (P5)
 │   ├── css/
 │   │   ├── style.css
 │   │   └── auth.css
@@ -174,7 +182,7 @@ sibw-ayto-cazorla/
 
 | Ruta | Acceso | Descripción |
 |---|---|---|
-| `/` | Todos | Portada con listado de noticias |
+| `/` | Todos | Portada con noticias publicadas y buscador AJAX |
 | `/noticia/{id}` | Todos | Página de noticia individual |
 | `/imprimir/{id}` | Todos | Vista de impresión en B/N |
 | `/login` | Anónimo | Formulario de login |
@@ -182,13 +190,15 @@ sibw-ayto-cazorla/
 | `/logout` | Logueado | Cierre de sesión |
 | `/perfil` | Logueado | Editar datos y eliminar cuenta |
 | `/comentarios` | Moderador / Superusuario | Panel de gestión de comentarios |
-| `/noticias` | Gestor / Superusuario | Panel de gestión de noticias |
+| `/noticias` | Gestor / Superusuario | Panel de gestión de noticias con búsqueda AJAX y toggle publicado |
 | `/hashtags` | Gestor / Superusuario | Panel de gestión de hashtags |
 | `/usuarios` | Superusuario | Panel de gestión de usuarios y roles |
+| `/ajax/buscar` | Según tipo | Búsqueda JSON para portada y gestión |
+| `/ajax/toggle-publicado` | Gestor / Superusuario | Cambia estado publicado de una noticia |
 
 ---
 
-## Usuarios de prueba (P4)
+## Usuarios de prueba
 
 Contraseña de todos: `1234`
 
@@ -222,8 +232,7 @@ docker exec lamp-php84 chown www-data:www-data /var/www/html/img/Noticias
 
 ## Estado
 
-✅ Prácticas 1-4 completadas  
-⏳ Práctica 5 pendiente
+✅ Prácticas 1-5 completadas
 
 ---
 
