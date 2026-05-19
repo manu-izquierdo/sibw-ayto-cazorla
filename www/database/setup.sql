@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS noticias (
     concejalia VARCHAR(100),
     lugar_id INT,
     descripcion TEXT,
+    publicado TINYINT(1) NOT NULL DEFAULT 0,
     FOREIGN KEY (lugar_id) REFERENCES lugares(id)
 );
 

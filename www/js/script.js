@@ -1,15 +1,15 @@
 // ── Panel de comentarios ─────────────────────────────────────────────────────
 
-const panelLateral      = document.querySelector('.formulario');
-const zonaActiva        = document.getElementById('zona-derecha');
-const pestanaAbrir      = document.getElementById('pestana-abrir');
-const cerrar            = document.getElementById('cancel');
-const abrirFormulario   = document.getElementById('boton-bloque-formulario');
-const formulario        = document.querySelector('.bloque-formulario');
-const cerrarFormulario  = document.getElementById('cancelar-comentario');
-const inputNombre       = document.getElementById('autor-comentario');
-const inputEmail        = document.getElementById('email-comentario');
-const inputTexto        = document.getElementById('texto-comentario');
+const panelLateral     = document.querySelector('.formulario');
+const zonaActiva       = document.getElementById('zona-derecha');
+const pestanaAbrir     = document.getElementById('pestana-abrir');
+const cerrar           = document.getElementById('cancel');
+const abrirFormulario  = document.getElementById('boton-bloque-formulario');
+const formulario       = document.querySelector('.bloque-formulario');
+const cerrarFormulario = document.getElementById('cancelar-comentario');
+const inputNombre      = document.getElementById('autor-comentario');
+const inputEmail       = document.getElementById('email-comentario');
+const inputTexto       = document.getElementById('texto-comentario');
 
 if (zonaActiva) {
     zonaActiva.addEventListener('mouseenter', function () {
@@ -88,32 +88,28 @@ if (inputTexto) {
     });
 }
 
-// ── Confirmación antes de enviar formularios peligrosos ──────────────────────
-// Todos los <form class="form-confirmar" data-mensaje="..."> piden confirm()
+// ── Confirmación antes de borrar ─────────────────────────────────────────────
+// Usamos delegación en document para que funcione también con filas
+// reconstruidas por AJAX (si usáramos querySelectorAll, los nuevos
+// elementos no tendrían el listener)
 
-document.querySelectorAll('.form-confirmar').forEach(function (form) {
-    form.addEventListener('submit', function (e) {
-        const mensaje = form.dataset.mensaje || '¿Estás seguro?';
+document.addEventListener('submit', function (e) {
+    if (e.target.classList.contains('form-confirmar')) {
+        const mensaje = e.target.dataset.mensaje || '¿Estás seguro?';
         if (!confirm(mensaje)) {
             e.preventDefault();
         }
-    });
+    }
 });
 
-// ── Edición inline de comentarios desde la página de noticia ─────────────────
-// Botones con clase btn-toggle-comentario y data-id
+// ── Edición inline de comentarios en noticia ──────────────────────────────────
 
 document.querySelectorAll('.btn-toggle-comentario').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-        toggleEditarComentario(btn.dataset.id);
-    });
+    btn.addEventListener('click', function () { toggleEditarComentario(btn.dataset.id); });
 });
 
-// Botones cancelar con clase btn-cancelar-comentario y data-id
 document.querySelectorAll('.btn-cancelar-comentario').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-        toggleEditarComentario(btn.dataset.id);
-    });
+    btn.addEventListener('click', function () { toggleEditarComentario(btn.dataset.id); });
 });
 
 function toggleEditarComentario(id) {
@@ -125,19 +121,14 @@ function toggleEditarComentario(id) {
     texto.style.display = oculto ? 'none'  : 'block';
 }
 
-// ── Edición inline de comentarios desde el panel de gestión ──────────────────
-// Botones con clase btn-toggle-gestion y data-id
+// ── Edición inline de comentarios en gestión ─────────────────────────────────
 
 document.querySelectorAll('.btn-toggle-gestion').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-        toggleEditar(btn.dataset.id);
-    });
+    btn.addEventListener('click', function () { toggleEditar(btn.dataset.id); });
 });
 
 document.querySelectorAll('.btn-cancelar-gestion').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-        toggleEditar(btn.dataset.id);
-    });
+    btn.addEventListener('click', function () { toggleEditar(btn.dataset.id); });
 });
 
 function toggleEditar(id) {
@@ -146,7 +137,7 @@ function toggleEditar(id) {
     fila.style.display = fila.style.display === 'none' ? 'table-row' : 'none';
 }
 
-// ── Añadir hashtags dinámicamente (formulario de noticia) ────────────────────
+// ── Añadir hashtags dinámicamente ─────────────────────────────────────────────
 
 const btnAddTag = document.getElementById('btn-add-tag');
 if (btnAddTag) {
@@ -157,8 +148,7 @@ if (btnAddTag) {
 
         if (nombre === '') return;
 
-        const existentes = container.querySelectorAll('input[type=checkbox]');
-        for (const cb of existentes) {
+        for (const cb of container.querySelectorAll('input[type=checkbox]')) {
             if (cb.value === nombre) { input.value = ''; return; }
         }
 
@@ -170,9 +160,179 @@ if (btnAddTag) {
     });
 }
 
-// ── Alerta de errores del servidor ───────────────────────────────────────────
+// ── Alerta de errores del servidor ────────────────────────────────────────────
 
 const metaError = document.querySelector('meta[name="server-error"]');
 if (metaError) {
     alert(metaError.getAttribute('content'));
+}
+
+
+// =============================================================================
+// P5 – AJAX
+// =============================================================================
+
+// ── Búsqueda dinámica en portada (desplegable) ────────────────────────────────
+
+var inputPortada    = document.getElementById('busqueda-portada');
+var dropdownPortada = document.getElementById('dropdown-portada');
+
+if (inputPortada) {
+
+    inputPortada.addEventListener('input', async function () {
+        var q = this.value.trim();
+
+        if (q.length < 1) {
+            dropdownPortada.innerHTML = '';
+            dropdownPortada.style.display = 'none';
+            return;
+        }
+
+        var url = '/ajax/buscar?tipo=portada&q=' + encodeURIComponent(q);
+        const peticion = await fetch(url);
+        const noticias = await peticion.json();
+
+        if (noticias.length === 0) {
+            dropdownPortada.innerHTML = '';
+            dropdownPortada.style.display = 'none';
+            return;
+        }
+
+        var html = '';
+        noticias.forEach(function (n) {
+            html += '<a href="/noticia/' + n.id + '" class="dropdown-item">' + n.titulo + '</a>';
+        });
+        dropdownPortada.innerHTML = html;
+        dropdownPortada.style.display = 'block';
+    });
+
+    // Cierra el desplegable al hacer clic fuera
+    document.addEventListener('click', function (e) {
+        if (e.target !== inputPortada && !dropdownPortada.contains(e.target)) {
+            dropdownPortada.style.display = 'none';
+        }
+    });
+}
+
+// ── Búsqueda AJAX en gestión de noticias ─────────────────────────────────────
+
+var formBusquedaNoticias = document.getElementById('form-busqueda-noticias');
+var tbodyNoticias        = document.getElementById('tbody-noticias');
+
+// Construye una fila <tr> a partir de un objeto noticia recibido en JSON
+function construirFilaNoticia(n) {
+    var img    = n.ruta
+        ? '<img src="' + n.ruta + '" class="thumb-noticia">'
+        : '<span class="sin-imagen">Sin imagen</span>';
+    var checked = n.publicado == 1 ? 'checked' : '';
+    var partes  = n.fecha ? n.fecha.substring(0, 10).split('-') : ['', '', ''];
+    var fecha   = partes[2] + '/' + partes[1] + '/' + partes[0];
+
+    return '<tr>'
+         + '<td>' + n.id + '</td>'
+         + '<td>' + img + '</td>'
+         + '<td><a href="/noticia/' + n.id + '" class="enlace-noticia">' + n.titulo + '</a></td>'
+         + '<td>' + (n.tipo || '') + '</td>'
+         + '<td>' + (n.concejalia || '') + '</td>'
+         + '<td>' + fecha + '</td>'
+         + '<td><input type="checkbox" class="checkbox-publicado" data-id="' + n.id + '" ' + checked + '></td>'
+         + '<td class="td-acciones">'
+         +   '<a href="/noticias?accion=form-editar&id=' + n.id + '" class="btn-icono btn-editar-toggle">'
+         +     '<i class="fa-solid fa-pen"></i>'
+         +   '</a>'
+         +   '<form action="/noticias" method="POST" style="display:inline"'
+         +         ' class="form-confirmar" data-mensaje="¿Borrar esta noticia?">'
+         +     '<input type="hidden" name="accion" value="borrar">'
+         +     '<input type="hidden" name="id_noticia" value="' + n.id + '">'
+         +     '<button type="submit" class="btn-icono btn-borrar">'
+         +       '<i class="fa-solid fa-trash"></i>'
+         +     '</button>'
+         +   '</form>'
+         + '</td>'
+         + '</tr>';
+}
+
+async function buscarNoticiasGestion() {
+    var titulo  = document.getElementById('buscar_titulo')  ? document.getElementById('buscar_titulo').value  : '';
+    var desc    = document.getElementById('buscar_desc')    ? document.getElementById('buscar_desc').value    : '';
+    var hashtag = document.getElementById('buscar_hashtag') ? document.getElementById('buscar_hashtag').value : '';
+
+    var url = '/ajax/buscar?tipo=gestion'
+        + '&buscar_titulo='  + encodeURIComponent(titulo)
+        + '&buscar_desc='    + encodeURIComponent(desc)
+        + '&buscar_hashtag=' + encodeURIComponent(hashtag);
+
+    const peticion = await fetch(url);
+    const noticias = await peticion.json();
+
+    if (!tbodyNoticias) return;
+
+    if (noticias.length === 0) {
+        tbodyNoticias.innerHTML = '<tr><td colspan="8" class="gestion-vacio">No se encontraron noticias.</td></tr>';
+        return;
+    }
+
+    var html = '';
+    noticias.forEach(function (n) { html += construirFilaNoticia(n); });
+    tbodyNoticias.innerHTML = html;
+}
+
+if (formBusquedaNoticias) {
+    formBusquedaNoticias.addEventListener('submit', function (e) {
+        e.preventDefault();
+        buscarNoticiasGestion();
+    });
+
+    var btnLimpiarNoticias = formBusquedaNoticias.querySelector('.btn-limpiar-noticias');
+    if (btnLimpiarNoticias) {
+        btnLimpiarNoticias.addEventListener('click', function (e) {
+            e.preventDefault();
+            formBusquedaNoticias.reset();
+            buscarNoticiasGestion();
+        });
+    }
+}
+
+// ── Toggle publicado con AJAX ─────────────────────────────────────────────────
+// Usamos delegación en tbodyNoticias porque sus filas se reconstruyen
+// con innerHTML tras cada búsqueda AJAX
+
+if (tbodyNoticias) {
+    tbodyNoticias.addEventListener('change', async function (e) {
+        if (!e.target.classList.contains('checkbox-publicado')) return;
+
+        var checkbox = e.target;
+        var datos = new FormData();
+        datos.append('id_noticia', checkbox.dataset.id);
+
+        const peticion = await fetch('/ajax/toggle-publicado', { method: 'POST', body: datos });
+        const resultado = await peticion.json();
+
+        // Sincroniza el estado visual con lo que confirma la BD
+        checkbox.checked = resultado.publicado === 1;
+    });
+}
+
+// ── Búsqueda instantánea en gestión (igual que portada) ──────────────────────
+
+var inputTitulo  = document.getElementById('buscar_titulo');
+var inputDesc    = document.getElementById('buscar_desc');
+var selectHashtag = document.getElementById('buscar_hashtag');
+
+if (inputTitulo) {
+    inputTitulo.addEventListener('input', function () {
+        buscarNoticiasGestion();
+    });
+}
+
+if (inputDesc) {
+    inputDesc.addEventListener('input', function () {
+        buscarNoticiasGestion();
+    });
+}
+
+if (selectHashtag) {
+    selectHashtag.addEventListener('change', function () {
+        buscarNoticiasGestion();
+    });
 }

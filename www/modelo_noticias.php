@@ -3,8 +3,8 @@
 function listarNoticias($busqueda_titulo = '', $busqueda_desc = '', $busqueda_hashtag = '') {
     $mysqli = conectar();
 
-    $sql = "SELECT n.id, n.titulo, n.fecha, n.tipo, n.concejalia,
-                   MIN(i.ruta) as ruta
+    $sql = "SELECT n.id, n.titulo, n.fecha, n.tipo, n.concejalia, n.publicado,
+                MIN(i.ruta) as ruta
             FROM noticias n
             LEFT JOIN imagenes i ON n.id = i.noticia_id";
 
@@ -285,4 +285,25 @@ function subirImagenes($noticia_id) {
     }
 
     $mysqli->close();
+}
+
+function togglePublicado($id_noticia) {
+    $mysqli = conectar();
+
+    $stmt = $mysqli->prepare(
+        "UPDATE noticias SET publicado = 1 - publicado WHERE id = ?"
+    );
+    $stmt->bind_param('i', $id_noticia);
+    $stmt->execute();
+    $stmt->close();
+
+    // Devolvemos el nuevo valor para confirmarlo en el cliente
+    $stmt2 = $mysqli->prepare("SELECT publicado FROM noticias WHERE id = ?");
+    $stmt2->bind_param('i', $id_noticia);
+    $stmt2->execute();
+    $fila = $stmt2->get_result()->fetch_assoc();
+    $stmt2->close();
+    $mysqli->close();
+
+    return (int) $fila['publicado'];
 }

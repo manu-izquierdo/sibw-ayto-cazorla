@@ -14,6 +14,8 @@ USE sibw;
 -- 1. Desactivar comprobación de llaves foráneas para poder limpiar en cascada
 SET FOREIGN_KEY_CHECKS = 0;
 
+ALTER TABLE noticias ADD COLUMN IF NOT EXISTS publicado TINYINT(1) NOT NULL DEFAULT 0;
+
 -- 2. Limpiar datos existentes
 DELETE FROM comentarios;
 DELETE FROM imagenes;
@@ -109,3 +111,6 @@ INSERT INTO noticia_hashtag (noticia_id, hashtag_id) VALUES
 (6, 1),  -- asfaltado → obras
 (7, 4),  -- reciclaje → medioambiente
 (8, 5);  -- digitalización → comercio
+
+-- Publico las primeras 6 noticias (las dos últimas quedan sin publicar)
+UPDATE noticias SET publicado = 1 WHERE id IN (1,2,3,4,5,6);

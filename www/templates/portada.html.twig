@@ -5,21 +5,28 @@
 {% block tituloPagina %} <title>Portada Ayto Cazorla</title> {% endblock %}
 
 {% block cuerpo %}
-
     <main class="main-portada">
+
+        {# ── P5: Buscador dinámico estilo Google ── #}
+        <div class="buscador-portada-wrapper">
+            <input type="text" id="busqueda-portada"
+                   placeholder="🔍 Buscar noticias..."
+                   autocomplete="off">
+            <div id="dropdown-portada" class="dropdown-busqueda"></div>
+        </div>
+
         {% for noticia in noticias %}
             <a href="/noticia/{{ noticia.id }}">
                 <article>
                     <figure>
-                        {# Si no hay imagen asociada, usamos una por defecto #}
                         <img src="{{ noticia.ruta|default('img/prueba.jpg') }}" alt="{{ noticia.titulo }}">
                         <figcaption> {{ noticia.titulo }} </figcaption>
-                    </figure>   
+                    </figure>
                 </article>
             </a>
         {% else %}
-            <p>No hay noticias disponibles en este momento.</p>
+            <p style="grid-column: 1/-1">No hay noticias publicadas en este momento.</p>
         {% endfor %}
-    </main>
 
+    </main>
 {% endblock %}

@@ -68,6 +68,11 @@
             require 'controlador_usuarios.php';
             break;
         
+        case 'ajax':
+            $subaccion = isset($partes[1]) ? $partes[1] : '';
+            require 'controlador_ajax.php';
+            break;
+
         default:
             http_response_code(404);
             die("Error 404: La ruta solicitada no existe en la aplicación.");

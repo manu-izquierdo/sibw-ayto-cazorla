@@ -22,15 +22,19 @@
         </div>
     </div>
 
-    {# Buscador triple: título, descripción y hashtag #}
-    <form action="/noticias" method="GET" class="form-busqueda form-busqueda-noticias">
-        <input type="text" name="buscar_titulo" class="input-estilo input-busqueda"
+    {# ── P5: id al formulario para interceptarlo con JS ── #}
+    <form id="form-busqueda-noticias" action="/noticias" method="GET"
+          class="form-busqueda form-busqueda-noticias">
+        <input type="text" id="buscar_titulo" name="buscar_titulo"
+               class="input-estilo input-busqueda"
                placeholder="Buscar por título..."
                value="{{ busqueda_titulo }}">
-        <input type="text" name="buscar_desc" class="input-estilo input-busqueda"
+        <input type="text" id="buscar_desc" name="buscar_desc"
+               class="input-estilo input-busqueda"
                placeholder="Buscar por descripción..."
                value="{{ busqueda_desc }}">
-        <select name="buscar_hashtag" class="input-estilo select-hashtag-buscar">
+        <select id="buscar_hashtag" name="buscar_hashtag"
+                class="input-estilo select-hashtag-buscar">
             <option value="">— Todos los hashtags —</option>
             {% for tag in todos_hashtags %}
                 <option value="{{ tag.nombre }}"
@@ -42,9 +46,8 @@
         <button type="submit" class="btn-buscar">
             <i class="fa-solid fa-magnifying-glass"></i> Buscar
         </button>
-        {% if busqueda_titulo or busqueda_desc or busqueda_hashtag %}
-            <a href="/noticias" class="btn-limpiar">Limpiar</a>
-        {% endif %}
+        {# Siempre visible: JS previene el default y hace AJAX; si no hay JS navega normalmente #}
+        <a href="/noticias" class="btn-limpiar btn-limpiar-noticias">Limpiar</a>
     </form>
 
     {% if noticias is empty %}
@@ -59,10 +62,12 @@
                     <th>Tipo</th>
                     <th>Concejalía</th>
                     <th>Fecha</th>
+                    <th>Publicado</th>  {# ← NUEVA COLUMNA #}
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            {# ← id para que JS pueda reemplazar las filas tras búsqueda AJAX #}
+            <tbody id="tbody-noticias">
                 {% for n in noticias %}
                 <tr>
                     <td>{{ n.id }}</td>
@@ -79,14 +84,18 @@
                     <td>{{ n.tipo }}</td>
                     <td>{{ n.concejalia }}</td>
                     <td>{{ n.fecha|date("d/m/Y") }}</td>
+                    {# ← P5: checkbox que dispara AJAX al cambiar #}
+                    <td>
+                        <input type="checkbox"
+                               class="checkbox-publicado"
+                               data-id="{{ n.id }}"
+                               {{ n.publicado ? 'checked' : '' }}>
+                    </td>
                     <td class="td-acciones">
-
-                        {# Editar #}
                         <a href="/noticias?accion=form-editar&id={{ n.id }}"
                            class="btn-icono btn-editar-toggle" title="Editar noticia">
                             <i class="fa-solid fa-pen"></i>
                         </a>
-
                         <form action="/noticias" method="POST"
                               style="display:inline"
                               class="form-confirmar"
@@ -105,5 +114,4 @@
     {% endif %}
 
 </main>
-
 {% endblock %}

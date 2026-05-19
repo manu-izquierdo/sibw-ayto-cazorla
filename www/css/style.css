@@ -124,6 +124,7 @@ ul{
 .main-portada {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto 1fr 1fr;
     background-color: rgba(255, 255, 255, 0.9);
     padding: 2rem;
     flex-grow: 1;       /* Dado que el main está en un flexbox junto el aside le dice al <main> que use todo el espacio sobrante para él*/
@@ -1048,4 +1049,79 @@ y ocupar cualquier espacio vacío que encuentre en el contenedor padre.*/
     font-family: 'Open Sans', sans-serif;
     font-size: 0.9rem;
     cursor: pointer;
+}
+
+/* ══════════════════════════════════════════════
+   P5 – Buscador dinámico portada
+══════════════════════════════════════════════ */
+
+.buscador-portada-wrapper {
+    grid-column: 1 / -1;       /* ocupa la fila pero no empuja el contenido */
+    justify-self: end;          /* se alinea a la derecha dentro de esa fila */
+    position: relative;         /* el dropdown se ancla respecto a este div  */
+    width: 220px;
+    margin-bottom: -0.5rem;     /* reduce el hueco que deja en el grid       */
+}
+
+#busqueda-portada {
+    width: 100%;
+    padding: 0.45rem 1rem;
+    border: 1.5px solid rgba(10, 102, 56, 0.35);
+    border-radius: 20px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.88rem;
+    background-color: rgba(255, 255, 255, 0.85);
+    outline: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+#busqueda-portada:focus {
+    border-color: rgba(10, 102, 56, 0.75);
+    background-color: white;
+}
+
+.dropdown-busqueda {
+    display: none;
+    position: absolute;
+    top: calc(100% + 3px);
+    right: 0;                   /* crece hacia la izquierda, nunca sale      */
+    left: auto;
+    min-width: 280px;
+    background: white;
+    border: 1px solid rgba(10, 102, 56, 0.25);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.55rem 1rem;
+    color: #2c3e50;
+    border-bottom: 1px solid #f0f0f0;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.88rem;
+    transition: background-color 0.15s ease;
+}
+
+.dropdown-item:last-child { border-bottom: none; }
+
+.dropdown-item:hover {
+    background-color: #f0f7f3;
+    color: rgba(10, 102, 56, 0.9);
+}   
+
+/* ══════════════════════════════════════════════
+   P5 – Checkbox publicado en gestión
+══════════════════════════════════════════════ */
+
+.checkbox-publicado {
+    width: 1.2rem;
+    height: 1.2rem;
+    cursor: pointer;
+    accent-color: rgba(10, 102, 56, 0.9);
 }
