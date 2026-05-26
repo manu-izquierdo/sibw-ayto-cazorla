@@ -7,7 +7,8 @@
         exit;
     }
 
-    $error = null;
+    $mysqli = conectar();
+    $error  = null;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -19,14 +20,15 @@
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = "El formato del correo no es válido.";
         } else {
-            $usuario = obtenerUsuarioPorEmail($email);
-            
+            $usuario = obtenerUsuarioPorEmail($mysqli, $email);
+
             if ($usuario && password_verify($password, $usuario['password'])) {
                 // Credenciales correctas: guardamos datos en sesión
                 $_SESSION['usuario_id']     = $usuario['id'];
                 $_SESSION['usuario_nombre'] = $usuario['nombre'];
                 $_SESSION['usuario_rol']    = $usuario['rol'];
 
+                $mysqli->close();
                 header("Location: /");
                 exit;
             } else {
@@ -38,4 +40,5 @@
     echo $twig->render('login.html.twig', [
         'error' => $error
     ]);
+    $mysqli->close();
 ?>

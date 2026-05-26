@@ -8,8 +8,9 @@
         exit;
     }
 
-    $error = null;
-    $exito = null;
+    $mysqli = conectar();
+    $error  = null;
+    $exito  = null;
 
     // ── BORRAR HASHTAG ───────────────────────────────────────────────────────
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'borrar') {
@@ -17,7 +18,7 @@
         $id_tag = intval($_POST['id_hashtag'] ?? 0);
 
         if ($id_tag > 0) {
-            borrarHashtag($id_tag);
+            borrarHashtag($mysqli, $id_tag);
             $exito = "Hashtag eliminado correctamente.";
         }
     }
@@ -25,22 +26,23 @@
     // ── EDITAR HASHTAG ───────────────────────────────────────────────────────
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'editar') {
 
-        $id_tag      = intval($_POST['id_hashtag'] ?? 0);
+        $id_tag       = intval($_POST['id_hashtag'] ?? 0);
         $nombre_nuevo = trim(strtolower($_POST['nombre'] ?? ''));
 
         if ($id_tag > 0 && $nombre_nuevo !== '') {
-            if (hashtagNombreExiste($nombre_nuevo, $id_tag)) {
+            if (hashtagNombreExiste($mysqli, $nombre_nuevo, $id_tag)) {
                 $error = "Ya existe un hashtag con ese nombre.";
             } else {
-                actualizarHashtag($id_tag, $nombre_nuevo);
+                actualizarHashtag($mysqli, $id_tag, $nombre_nuevo);
                 $exito = "Hashtag actualizado correctamente.";
             }
         }
     }
 
     echo $twig->render('gestion_hashtags.html.twig', [
-        'hashtags' => listarHashtagsConNoticias(),
+        'hashtags' => listarHashtagsConNoticias($mysqli),
         'error'    => $error,
         'exito'    => $exito
     ]);
+    $mysqli->close();
 ?>

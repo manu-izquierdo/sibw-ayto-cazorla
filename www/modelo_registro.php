@@ -1,22 +1,17 @@
 <?php
 
-function emailExiste($email) {
-    $mysqli = conectar();
-
+function emailExiste($mysqli, $email) {
     $stmt = $mysqli->prepare("SELECT id FROM usuarios WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
     $existe = $stmt->num_rows > 0;
     $stmt->close();
-    $mysqli->close();
 
     return $existe;
 }
 
-function insertarUsuario($nombre, $email, $hash) {
-    $mysqli = conectar();
-
+function insertarUsuario($mysqli, $nombre, $email, $hash) {
     $stmt = $mysqli->prepare(
         "INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, 'registrado')"
     );
@@ -24,7 +19,6 @@ function insertarUsuario($nombre, $email, $hash) {
     $resultado = $stmt->execute();
     $nuevo_id  = $mysqli->insert_id;
     $stmt->close();
-    $mysqli->close();
 
     return $resultado ? $nuevo_id : false;
 }

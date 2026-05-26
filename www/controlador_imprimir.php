@@ -1,11 +1,13 @@
 <?php
     require_once "modelo_imprimir.php";
 
-    $noticia  = obtenerNoticiaParaImprimir($id);
-    $imagenes = obtenerImagenesParaImprimir($id);
+    $mysqli   = conectar();
+    $noticia  = obtenerNoticiaParaImprimir($mysqli, $id);
+    $imagenes = obtenerImagenesParaImprimir($mysqli, $id);
 
     echo $twig->render('noticia_imprimir.html.twig', [
         'noticia'  => $noticia,
         'imagenes' => $imagenes
     ]);
+    $mysqli->close();
 ?>

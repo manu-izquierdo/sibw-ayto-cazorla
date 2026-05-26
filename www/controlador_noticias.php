@@ -8,6 +8,7 @@
         exit;
     }
 
+    $mysqli = conectar();
     $accion = isset($_POST['accion']) ? $_POST['accion'] : (isset($_GET['accion']) ? $_GET['accion'] : 'listar');
 
     // ── BORRAR NOTICIA ───────────────────────────────────────────────────────
@@ -16,8 +17,9 @@
         $id_noticia = isset($_POST['id_noticia']) ? intval($_POST['id_noticia']) : 0;
 
         if ($id_noticia > 0) {
-            borrarNoticia($id_noticia);
+            borrarNoticia($mysqli, $id_noticia);
         }
+        $mysqli->close();
         header("Location: /noticias");
         exit;
     }
@@ -33,9 +35,10 @@
         $hashtags    = $_POST['hashtags']         ?? [];
 
         if ($titulo !== '' && $descripcion !== '') {
-            $nuevo_id = crearNoticia($titulo, $descripcion, $tipo, $concejalia, $lugar_id);
-            guardarHashtags($nuevo_id, $hashtags);
-            subirImagenes($nuevo_id);
+            $nuevo_id = crearNoticia($mysqli, $titulo, $descripcion, $tipo, $concejalia, $lugar_id);
+            guardarHashtags($mysqli, $nuevo_id, $hashtags);
+            subirImagenes($mysqli, $nuevo_id);
+            $mysqli->close();
             header("Location: /noticia/" . $nuevo_id);
             exit;
         }
@@ -55,11 +58,12 @@
         $imgs_borrar = $_POST['imgs_borrar']        ?? [];
 
         if ($id_noticia > 0 && $titulo !== '' && $descripcion !== '') {
-            actualizarNoticia($id_noticia, $titulo, $descripcion, $tipo, $concejalia, $lugar_id);
-            borrarImagenesSeleccionadas($imgs_borrar, $id_noticia);
-            subirImagenes($id_noticia);
-            borrarHashtagsDeNoticia($id_noticia);
-            guardarHashtags($id_noticia, $hashtags);
+            actualizarNoticia($mysqli, $id_noticia, $titulo, $descripcion, $tipo, $concejalia, $lugar_id);
+            borrarImagenesSeleccionadas($mysqli, $imgs_borrar, $id_noticia);
+            subirImagenes($mysqli, $id_noticia);
+            borrarHashtagsDeNoticia($mysqli, $id_noticia);
+            guardarHashtags($mysqli, $id_noticia, $hashtags);
+            $mysqli->close();
             header("Location: /noticia/" . $id_noticia);
             exit;
         }
@@ -68,31 +72,37 @@
     // ── FORMULARIO NUEVA NOTICIA ─────────────────────────────────────────────
     if ($accion === 'nueva') {
         echo $twig->render('formulario_noticia.html.twig', [
-            'noticia'          => null,
-            'lugares'          => obtenerLugaresFormulario(),
-            'todos_hashtags'   => obtenerTodosHashtags(),
-            'tags_noticia'     => [],
-            'imagenes'         => [],
-            'modo'             => 'crear'
+            'noticia'        => null,
+            'lugares'        => obtenerLugaresFormulario($mysqli),
+            'todos_hashtags' => obtenerTodosHashtags($mysqli),
+            'tags_noticia'   => [],
+            'imagenes'       => [],
+            'modo'           => 'crear'
         ]);
+        $mysqli->close();
         exit;
     }
 
     // ── FORMULARIO EDITAR NOTICIA ────────────────────────────────────────────
     if ($accion === 'form-editar') {
         $id_noticia = isset($_GET['id']) ? intval($_GET['id']) : 0;
-        $noticia    = obtenerNoticiaParaEditar($id_noticia);
+        $noticia    = obtenerNoticiaParaEditar($mysqli, $id_noticia);
 
-        if (!$noticia) { header("Location: /noticias"); exit; }
+        if (!$noticia) {
+            $mysqli->close();
+            header("Location: /noticias");
+            exit;
+        }
 
         echo $twig->render('formulario_noticia.html.twig', [
-            'noticia'          => $noticia,
-            'lugares'          => obtenerLugaresFormulario(),
-            'todos_hashtags'   => obtenerTodosHashtags(),
-            'tags_noticia'     => obtenerHashtagsDeNoticia($id_noticia),
-            'imagenes'         => obtenerImagenesDeNoticia($id_noticia),
-            'modo'             => 'editar'
+            'noticia'        => $noticia,
+            'lugares'        => obtenerLugaresFormulario($mysqli),
+            'todos_hashtags' => obtenerTodosHashtags($mysqli),
+            'tags_noticia'   => obtenerHashtagsDeNoticia($mysqli, $id_noticia),
+            'imagenes'       => obtenerImagenesDeNoticia($mysqli, $id_noticia),
+            'modo'           => 'editar'
         ]);
+        $mysqli->close();
         exit;
     }
 
@@ -102,10 +112,11 @@
     $busqueda_hashtag = trim($_GET['buscar_hashtag'] ?? '');
 
     echo $twig->render('gestion_noticias.html.twig', [
-        'noticias'         => listarNoticias($busqueda_titulo, $busqueda_desc, $busqueda_hashtag),
+        'noticias'         => listarNoticias($mysqli, $busqueda_titulo, $busqueda_desc, $busqueda_hashtag),
         'busqueda_titulo'  => $busqueda_titulo,
         'busqueda_desc'    => $busqueda_desc,
         'busqueda_hashtag' => $busqueda_hashtag,
-        'todos_hashtags'   => obtenerTodosHashtags()
+        'todos_hashtags'   => obtenerTodosHashtags($mysqli)
     ]);
+    $mysqli->close();
 ?>

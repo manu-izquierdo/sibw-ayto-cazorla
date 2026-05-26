@@ -7,8 +7,9 @@
         exit;
     }
 
-    $error = null;
-    $exito = null;
+    $mysqli = conectar();
+    $error  = null;
+    $exito  = null;
 
     // ── ELIMINAR USUARIO ─────────────────────────────────────────────────────
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
@@ -19,12 +20,12 @@
             $error = "No puedes eliminar tu propia cuenta desde aquí.";
 
         } else {
-            $rol_objetivo = obtenerRolDeUsuario($id_objetivo);
+            $rol_objetivo = obtenerRolDeUsuario($mysqli, $id_objetivo);
 
-            if ($rol_objetivo === 'superusuario' && contarSuperusuarios() <= 1) {
+            if ($rol_objetivo === 'superusuario' && contarSuperusuarios($mysqli) <= 1) {
                 $error = "No puedes eliminar al único superusuario del sistema.";
             } else {
-                borrarUsuarioPorId($id_objetivo);
+                borrarUsuarioPorId($mysqli, $id_objetivo);
                 $exito = "Usuario eliminado correctamente.";
             }
         }
@@ -41,13 +42,13 @@
             $error = "Rol no válido.";
 
         } else {
-            $rol_actual = obtenerRolDeUsuario($id_objetivo);
+            $rol_actual = obtenerRolDeUsuario($mysqli, $id_objetivo);
 
             // Protección: no degradar si es el único superusuario
-            if ($rol_actual === 'superusuario' && $nuevo_rol !== 'superusuario' && contarSuperusuarios() <= 1) {
+            if ($rol_actual === 'superusuario' && $nuevo_rol !== 'superusuario' && contarSuperusuarios($mysqli) <= 1) {
                 $error = "No puedes quitar el rol de superusuario: es el único que queda en el sistema.";
             } else {
-                cambiarRolUsuario($id_objetivo, $nuevo_rol);
+                cambiarRolUsuario($mysqli, $id_objetivo, $nuevo_rol);
 
                 // Si el superusuario se cambió su propio rol, actualizar sesión
                 if ($id_objetivo === intval($_SESSION['usuario_id'])) {
@@ -61,9 +62,10 @@
     }
 
     echo $twig->render('gestion_usuarios.html.twig', [
-        'usuarios' => listarUsuarios(),
+        'usuarios' => listarUsuarios($mysqli),
         'error'    => $error,
         'exito'    => $exito,
         'mi_id'    => intval($_SESSION['usuario_id'])
     ]);
+    $mysqli->close();
 ?>

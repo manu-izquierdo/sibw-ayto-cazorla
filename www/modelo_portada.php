@@ -1,9 +1,6 @@
 <?php
 
-function obtenerNoticias() {
-    $mysqli = conectar();
-
-    // Solo noticias publicadas en portada
+function obtenerNoticias($mysqli) {
     $stmt = $mysqli->prepare(
         "SELECT n.id, n.titulo, MIN(i.ruta) as ruta
          FROM noticias n
@@ -15,15 +12,13 @@ function obtenerNoticias() {
     $stmt->execute();
     $noticias = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-    $mysqli->close();
 
     return $noticias;
 }
 
 // Búsqueda AJAX para el desplegable de portada
-function buscarNoticiasPublicadas($q) {
-    $mysqli = conectar();
-    $like   = '%' . $q . '%';
+function buscarNoticiasPublicadas($mysqli, $q) {
+    $like = '%' . $q . '%';
 
     $stmt = $mysqli->prepare(
         "SELECT id, titulo
@@ -36,7 +31,6 @@ function buscarNoticiasPublicadas($q) {
     $stmt->execute();
     $resultados = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-    $mysqli->close();
 
     return $resultados;
 }

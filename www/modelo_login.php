@@ -1,8 +1,6 @@
 <?php
 
-function obtenerUsuarioPorEmail($email) {
-    $mysqli = conectar();
-
+function obtenerUsuarioPorEmail($mysqli, $email) {
     $stmt = $mysqli->prepare(
         "SELECT id, nombre, password, rol FROM usuarios WHERE email = ?"
     );
@@ -10,7 +8,6 @@ function obtenerUsuarioPorEmail($email) {
     $stmt->execute();
     $usuario = $stmt->get_result()->fetch_assoc();
     $stmt->close();
-    $mysqli->close();
 
     return $usuario;
 }

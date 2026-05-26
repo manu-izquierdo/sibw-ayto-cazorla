@@ -7,14 +7,16 @@
         exit;
     }
 
-    $error = null;
-    $exito = null;
+    $mysqli     = conectar();
+    $error      = null;
+    $exito      = null;
     $id_usuario = $_SESSION['usuario_id'];
 
     // ── ELIMINAR CUENTA ──────────────────────────────────────────────────────
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
 
-        eliminarUsuario($id_usuario);
+        eliminarUsuario($mysqli, $id_usuario);
+        $mysqli->close();
         $_SESSION = [];
         session_destroy();
         header("Location: /");
@@ -41,15 +43,15 @@
         } elseif ($password !== '' && $password !== $password2) {
             $error = "Las contraseñas no coinciden.";
 
-        } elseif (emailEnUso($email, $id_usuario)) {
+        } elseif (emailEnUso($mysqli, $email, $id_usuario)) {
             $error = "Ese correo ya está en uso por otra cuenta.";
 
         } else {
             if ($password !== '') {
                 $hash      = password_hash($password, PASSWORD_DEFAULT);
-                $resultado = actualizarUsuarioConPassword($id_usuario, $nombre, $email, $hash);
+                $resultado = actualizarUsuarioConPassword($mysqli, $id_usuario, $nombre, $email, $hash);
             } else {
-                $resultado = actualizarUsuario($id_usuario, $nombre, $email);
+                $resultado = actualizarUsuario($mysqli, $id_usuario, $nombre, $email);
             }
 
             if ($resultado) {
@@ -63,10 +65,11 @@
     }
 
     // ── CARGAR DATOS ACTUALES ────────────────────────────────────────────────
-    $usuario = obtenerUsuarioPorId($id_usuario);
+    $usuario = obtenerUsuarioPorId($mysqli, $id_usuario);
 
     if (!$usuario) {
         // El usuario fue eliminado o no existe, cerramos sesión
+        $mysqli->close();
         $_SESSION = [];
         session_destroy();
         header("Location: /");
@@ -78,4 +81,5 @@
         'error'   => $error,
         'exito'   => $exito
     ]);
+    $mysqli->close();
 ?>

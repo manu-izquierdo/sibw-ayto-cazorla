@@ -7,7 +7,8 @@
         exit;
     }
 
-    $error = null;
+    $mysqli = conectar();
+    $error  = null;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -29,18 +30,19 @@
         } elseif ($password !== $password2) {
             $error = "Las contraseñas no coinciden.";
 
-        } elseif (emailExiste($email)) {
+        } elseif (emailExiste($mysqli, $email)) {
             $error = "Ese correo electrónico ya está registrado.";
 
         } else {
             $hash     = password_hash($password, PASSWORD_DEFAULT);
-            $nuevo_id = insertarUsuario($nombre, $email, $hash);
+            $nuevo_id = insertarUsuario($mysqli, $nombre, $email, $hash);
 
             if ($nuevo_id) {
                 $_SESSION['usuario_id']     = $nuevo_id;
                 $_SESSION['usuario_nombre'] = $nombre;
                 $_SESSION['usuario_rol']    = 'registrado';
 
+                $mysqli->close();
                 header("Location: /");
                 exit;
             } else {
@@ -52,4 +54,5 @@
     echo $twig->render('registro.html.twig', [
         'error' => $error
     ]);
+    $mysqli->close();
 ?>

@@ -1,8 +1,6 @@
 <?php
 
-function listarNoticias($busqueda_titulo = '', $busqueda_desc = '', $busqueda_hashtag = '') {
-    $mysqli = conectar();
-
+function listarNoticias($mysqli, $busqueda_titulo = '', $busqueda_desc = '', $busqueda_hashtag = '') {
     $sql = "SELECT n.id, n.titulo, n.fecha, n.tipo, n.concejalia, n.publicado,
                 MIN(i.ruta) as ruta
             FROM noticias n
@@ -49,50 +47,38 @@ function listarNoticias($busqueda_titulo = '', $busqueda_desc = '', $busqueda_ha
         $noticias = $mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);
     }
 
-    $mysqli->close();
     return $noticias;
 }
 
-function obtenerNoticiaParaEditar($id) {
-    $mysqli = conectar();
-
+function obtenerNoticiaParaEditar($mysqli, $id) {
     $stmt = $mysqli->prepare("SELECT * FROM noticias WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $noticia = $stmt->get_result()->fetch_assoc();
     $stmt->close();
-    $mysqli->close();
 
     return $noticia;
 }
 
-function obtenerLugaresFormulario() {
-    $mysqli = conectar();
-
+function obtenerLugaresFormulario($mysqli) {
     $stmt = $mysqli->prepare("SELECT * FROM lugares ORDER BY nombre");
     $stmt->execute();
     $lugares = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-    $mysqli->close();
 
     return $lugares;
 }
 
-function obtenerTodosHashtags() {
-    $mysqli = conectar();
-
+function obtenerTodosHashtags($mysqli) {
     $stmt = $mysqli->prepare("SELECT * FROM hashtags ORDER BY nombre");
     $stmt->execute();
     $hashtags = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-    $mysqli->close();
 
     return $hashtags;
 }
 
-function obtenerHashtagsDeNoticia($noticia_id) {
-    $mysqli = conectar();
-
+function obtenerHashtagsDeNoticia($mysqli, $noticia_id) {
     $stmt = $mysqli->prepare(
         "SELECT h.nombre FROM hashtags h
          JOIN noticia_hashtag nh ON h.id = nh.hashtag_id
@@ -102,27 +88,22 @@ function obtenerHashtagsDeNoticia($noticia_id) {
     $stmt->execute();
     $tags = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-    $mysqli->close();
 
     return array_column($tags, 'nombre');
 }
 
-function obtenerImagenesDeNoticia($noticia_id) {
-    $mysqli = conectar();
-
+function obtenerImagenesDeNoticia($mysqli, $noticia_id) {
     $stmt = $mysqli->prepare("SELECT * FROM imagenes WHERE noticia_id = ?");
     $stmt->bind_param("i", $noticia_id);
     $stmt->execute();
     $imagenes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-    $mysqli->close();
 
     return $imagenes;
 }
 
 
-function crearNoticia($titulo, $descripcion, $tipo, $concejalia, $lugar_id) {
-    $mysqli    = conectar();
+function crearNoticia($mysqli, $titulo, $descripcion, $tipo, $concejalia, $lugar_id) {
     $lugar_val = $lugar_id > 0 ? $lugar_id : null;
 
     $stmt = $mysqli->prepare(
@@ -133,13 +114,11 @@ function crearNoticia($titulo, $descripcion, $tipo, $concejalia, $lugar_id) {
     $stmt->execute();
     $nuevo_id = $mysqli->insert_id;
     $stmt->close();
-    $mysqli->close();
 
     return $nuevo_id;
 }
 
-function actualizarNoticia($id, $titulo, $descripcion, $tipo, $concejalia, $lugar_id) {
-    $mysqli    = conectar();
+function actualizarNoticia($mysqli, $id, $titulo, $descripcion, $tipo, $concejalia, $lugar_id) {
     $lugar_val = $lugar_id > 0 ? $lugar_id : null;
 
     $stmt = $mysqli->prepare(
@@ -149,14 +128,11 @@ function actualizarNoticia($id, $titulo, $descripcion, $tipo, $concejalia, $luga
     $stmt->bind_param("ssssii", $titulo, $descripcion, $tipo, $concejalia, $lugar_val, $id);
     $resultado = $stmt->execute();
     $stmt->close();
-    $mysqli->close();
 
     return $resultado;
 }
 
-function borrarNoticia($id) {
-    $mysqli = conectar();
-
+function borrarNoticia($mysqli, $id) {
     // Obtener las rutas de las imágenes antes de borrar en cascada
     $stmt = $mysqli->prepare("SELECT ruta FROM imagenes WHERE noticia_id = ?");
     $stmt->bind_param("i", $id);
@@ -177,17 +153,14 @@ function borrarNoticia($id) {
     $stmt->bind_param("i", $id);
     $resultado = $stmt->execute();
     $stmt->close();
-    $mysqli->close();
 
     return $resultado;
 }
 
-function guardarHashtags($noticia_id, $hashtags) {
+function guardarHashtags($mysqli, $noticia_id, $hashtags) {
     foreach ($hashtags as $nombre_tag) {
         $nombre_tag = trim($nombre_tag);
         if ($nombre_tag === '') continue;
-
-        $mysqli = conectar();
 
         $stmt = $mysqli->prepare("INSERT IGNORE INTO hashtags (nombre) VALUES (?)");
         $stmt->bind_param("s", $nombre_tag);
@@ -208,25 +181,19 @@ function guardarHashtags($noticia_id, $hashtags) {
             $stmt->execute();
             $stmt->close();
         }
-
-        $mysqli->close();
     }
 }
 
-function borrarHashtagsDeNoticia($noticia_id) {
-    $mysqli = conectar();
-
+function borrarHashtagsDeNoticia($mysqli, $noticia_id) {
     $stmt = $mysqli->prepare("DELETE FROM noticia_hashtag WHERE noticia_id = ?");
     $stmt->bind_param("i", $noticia_id);
     $stmt->execute();
     $stmt->close();
-    $mysqli->close();
 }
 
 
-function borrarImagenesSeleccionadas($imgs_borrar, $noticia_id) {
+function borrarImagenesSeleccionadas($mysqli, $imgs_borrar, $noticia_id) {
     foreach ($imgs_borrar as $img_id) {
-        $mysqli     = conectar();
         $img_id_int = intval($img_id);
 
         // Obtener la ruta antes de borrar
@@ -249,11 +216,10 @@ function borrarImagenesSeleccionadas($imgs_borrar, $noticia_id) {
         $stmt->bind_param("ii", $img_id_int, $noticia_id);
         $stmt->execute();
         $stmt->close();
-        $mysqli->close();
     }
 }
 
-function subirImagenes($noticia_id) {
+function subirImagenes($mysqli, $noticia_id) {
     if (!isset($_FILES['imagenes']) || empty($_FILES['imagenes']['name'][0])) return;
 
     $dir_abs    = '/var/www/html/img/Noticias/';
@@ -263,8 +229,6 @@ function subirImagenes($noticia_id) {
     if (!is_dir($dir_abs)) {
         mkdir($dir_abs, 0775, true);
     }
-
-    $mysqli = conectar();
 
     foreach ($_FILES['imagenes']['tmp_name'] as $i => $tmp) {
         if ($_FILES['imagenes']['error'][$i] !== UPLOAD_ERR_OK) continue;
@@ -283,13 +247,9 @@ function subirImagenes($noticia_id) {
             $stmt->close();
         }
     }
-
-    $mysqli->close();
 }
 
-function togglePublicado($id_noticia) {
-    $mysqli = conectar();
-
+function togglePublicado($mysqli, $id_noticia) {
     $stmt = $mysqli->prepare(
         "UPDATE noticias SET publicado = 1 - publicado WHERE id = ?"
     );
@@ -303,7 +263,6 @@ function togglePublicado($id_noticia) {
     $stmt2->execute();
     $fila = $stmt2->get_result()->fetch_assoc();
     $stmt2->close();
-    $mysqli->close();
 
     return (int) $fila['publicado'];
 }

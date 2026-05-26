@@ -64,7 +64,7 @@ Componentes dinámicos:
 
 ### Práctica 3: Backend (PHP + BD) - 30%
 Sistema dinámico:
-- Conexiones no persistentes (función `conectar()` en `bd.php`, cada función del modelo abre y cierra)
+- Conexiones no persistentes (función `conectar()` en `bd.php`); el controlador abre la conexión, la pasa a cada función del modelo como parámetro y la cierra al finalizar — una sola conexión por petición HTTP
 - Separación Modelo-Controlador (`modelo_*.php` / `controlador_*.php`)
 - URLs limpias vía `.htaccess` y router en `index.php`
 - Validación servidor con prepared statements (prevención SQL injection)
@@ -232,7 +232,7 @@ docker exec lamp-php84 chown www-data:www-data /var/www/html/img/Noticias
 
 ## Estado
 
-✅ Prácticas 1-5 completadas
+✅ **Proyecto finalizado** — Prácticas 1-5 completadas (mayo 2026)
 
 ---
 
