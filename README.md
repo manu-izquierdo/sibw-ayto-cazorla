@@ -27,13 +27,13 @@ docker exec lamp-php84 chmod 775 /var/www/html/img/Noticias
 docker exec lamp-php84 chown www-data:www-data /var/www/html/img/Noticias
 ```
 
-### Con XAMPP
-```bash
-# Copiar a C:\xampp\htdocs\sibw-ayto-cazorla
-# Iniciar Apache + MySQL
-# Importar: www/database/setup.sql
-# Acceder: http://localhost/sibw-ayto-cazorla
-```
+### Importar la base de datos (phpMyAdmin)
+
+Tras arrancar los contenedores, accede a **http://localhost:8080** (phpMyAdmin).  
+Importa los dos ficheros SQL en este orden:
+
+1. `www/database/setup.sql` — crea las tablas
+2. `www/database/updatedata.sql` — inserta los datos de prueba y usuarios
 
 ---
 
